@@ -1,0 +1,18 @@
+Usage: file2bin.exe [-d] [-v] [-V] [-f] [-i <infile>] [-o <outfile>] [-l <len>] [-s <siz>] -- [<pass through>]
+
+description
+
+Options:
+    -d, --debug               debug mode (e.g. false); setable via $DEBUG
+    -v, --verbose             verbose mode (e.g. false); setable via $VERBOSE
+    -V, --version             display version (e.g. false); setable via $VERSION
+    -f, --noforce             don't suppress questions (e.g. false); setable via $NOFORCE
+    -i, --infile=<infile>     input filename (default=empty); setable via $INFILE
+    -o, --outfile=<outfile>   output filename (default=empty); setable via $OUTFILE
+    -l, --len=<len>           VAL byte offset on input stream (default=0) (default: 0); setable via $LEN
+    -s, --siz=<siz>           copy N bytes from input stream (default=0) (default: 0); setable via $SIZ
+    -h, --help                usage (-h) / detailed help text (--help)
+
+Pass through arguments:
+    <pass through>            pass through arguments
+

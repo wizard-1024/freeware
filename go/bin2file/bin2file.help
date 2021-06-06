@@ -1,0 +1,20 @@
+Usage: bin2file.exe [-d] [-v] [-V] [-t] [-f] [-i <infile>] [-o <outfile>] [-l <ilen>] [-s <siz>] [-p <olen>] -- [<pass through>]
+
+description
+
+Options:
+    -d, --debug               debug mode (e.g. false); setable via $DEBUG
+    -v, --verbose             verbose mode (e.g. false); setable via $VERBOSE
+    -V, --version             display version (e.g. false); setable via $VERSION
+    -t, --restore             restore original file timestamp (default=no) (e.g. false); setable via $RESTORE
+    -f, --noforce             don't suppress questions (e.g. false); setable via $NOFORCE
+    -i, --infile=<infile>     input filename (default=empty); setable via $INFILE
+    -o, --outfile=<outfile>   output filename (default=empty); setable via $OUTFILE
+    -l, --ilen=<ilen>         VAL byte offset on input stream (default=0) (default: 0); setable via $ILEN
+    -s, --siz=<siz>           copy N bytes from input stream (default=0) (default: 0); setable via $SIZ
+    -p, --olen=<olen>         VAL byte offset on output stream (default=0) (default: 0); setable via $OLEN
+    -h, --help                usage (-h) / detailed help text (--help)
+
+Pass through arguments:
+    <pass through>            pass through arguments
+

@@ -1,0 +1,19 @@
+Usage: listdir6.exe [-d] [-v] [-l <logfile>] [-s] [-m] [-f] [-t] [-V] [-r] -- [<pass through>]
+
+description
+
+Options:
+    -d, --debug               debug mode (e.g. false); setable via $DEBUG
+    -v, --verbose             verbose mode (e.g. false); setable via $VERBOSE
+    -l, --logfile=<logfile>   logfile
+    -s, --subdirs             search subdirs (e.g. false); setable via $SUBDIRS
+    -m, --md5                 md5 (e.g. false); setable via $MD5
+    -f, --fullname            print full name (e.g. false); setable via $FULLNAME
+    -t, --fileinfo            print file info (e.g. false); setable via $FILEINFO
+    -V, --version             display version (e.g. false); setable via $VERSION
+    -r, --dironly             print dirnames only (e.g. false); setable via $DIRONLY
+    -h, --help                usage (-h) / detailed help text (--help)
+
+Pass through arguments:
+    <pass through>            pass through arguments
+

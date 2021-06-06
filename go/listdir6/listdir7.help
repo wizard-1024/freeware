@@ -1,0 +1,33 @@
+NAME
+  listdir7 - list directory contents
+
+SYNOPSIS
+   listdir7 [-d][-s][-v][-f][-g][-m][-t][-r] [-n num] [-a num] [[-e mask]..] [[-i mask]..] [dirname]
+
+DESCRIPTION
+  LISTDIR7 is used the standard POSIX functions to list the directory contents.
+  The options are as follows:
+  -d   Debugging level.
+  -e mask
+       Exclude file(s) for search, wildcards are allowed (upto 30 masks).
+  -t   Print file date,time,size.
+  -f   Print full filename.
+  -g   Ignore case in filename(s).
+  -a num
+       wildcard match algoirthm for file masks search (default=0,min=0,max=8).
+  -i mask
+       Include file(s) for search, wildcards are allowed (upto 30 masks).
+  -s   Search also subdirectories.
+  -m   Use MD5 algorithm.
+  -r   Print only directory name.
+  -v   Verbose output.
+  -n num
+       Directory depth limit (default=unlimited).
+  dirname
+       Directory name to list.
+
+HISTORY
+  LISTDIR7 command appeared in October 2019
+
+AUTHOR
+  Dmitry V. Stefankov  (dstef@mail.ru, dmstef@google.com)

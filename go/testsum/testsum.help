@@ -1,0 +1,26 @@
+Usage: testsum.exe [-d] [-v] [-l <logfile>] [-s] [-a] [-b] [-m] [-A] [-B] [-C] [-e <hsiz>] [-f] [-t] [-V] [-r] [-T] -- [<pass through>]
+
+description
+
+Options:
+    -d, --debug               debug mode (e.g. false); setable via $DEBUG
+    -v, --verbose             verbose mode (e.g. false); setable via $VERBOSE
+    -l, --logfile=<logfile>   logfile
+    -s, --subdirs             search subdirs (e.g. false); setable via $SUBDIRS
+    -a, --crc16               crc16 (e.g. false); setable via $CRC16
+    -b, --crc32               crc32 (e.g. false); setable via $CRC32
+    -m, --md5                 md5 (e.g. false); setable via $MD5
+    -A, --sha1                sha1 (e.g. false); setable via $SHA1
+    -B, --sha2                sha2 (e.g. false); setable via $SHA2
+    -C, --sha3                sha3 (e.g. false); setable via $SHA3
+    -e, --hsiz=<hsiz>         hash size (default=0) (default: 0); setable via $HSIZ
+    -f, --fullname            print full name (e.g. false); setable via $FULLNAME
+    -t, --fileinfo            print file info (e.g. false); setable via $FILEINFO
+    -V, --version             display version (e.g. false); setable via $VERSION
+    -r, --dironly             print dirnames only (e.g. false); setable via $DIRONLY
+    -T, --test                Test (check) CRC sum for each file(s) listed in logfile (e.g. false); setable via $TEST
+    -h, --help                usage (-h) / detailed help text (--help)
+
+Pass through arguments:
+    <pass through>            pass through arguments
+
