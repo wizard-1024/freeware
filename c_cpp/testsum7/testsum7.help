@@ -1,0 +1,51 @@
+TESTSUM(1)                                             TESTSUM(1)
+
+NAME
+  testsum - test file(s) integrity using CRC-16/CRC-32/MD5/SHA-1/GOSTHASH/SHA-2/SHA-3 sums
+
+SYNOPSIS
+   testsum [-1][-2][-3][-4][-5][-7][-8][9] [-b] [-d] [[-e filemask]..] [-f logfile]
+           [-g] [[-i filemask]..] [-l] [-o resfile] [-r times] [-s] [-t]
+           [-v] [-h hashsize] [-n num] [dirname]
+
+DESCRIPTION
+  TESTSUM uses the standard CRC math to check the file contents integrity.
+  Defaults: generate CRC sums for file(s) in current directory, and a name of
+  a logfile to test CRC sums is the 'crc.log' filename.
+
+OPTIONS
+  -1   Use CRC-16 algorithm.
+  -3   Use CRC-32 algorithm (default).
+  -5   Use MD5 algorithm.
+  -7   Use SHA-1 algorithm.
+  -2   Use SHA-2 algorithm.
+  -4   Use SHA-3 algorithm.
+  -9   Use GOSTHASH algorithm (34.11-1994).
+  -8   Use GOSTHASH algorithm (34.11-2012).
+  -b   Print only filenames with failed CRC.
+  -d   Debugging level.
+  -e filemask
+       Exclude file(s) for search, wildcards are allowed (upto 30 masks).
+  -f   Input logfile.
+  -g   Ignore case in filename(s).
+  -i filemask
+       Include file(s) for search, wildcards are allowed (upto 30 masks).
+  -l   Use default logfile name to write output results.
+  -o   Output results filename.
+  -r times
+       Repeat a CRC calculations many times. Maximum is 1024.
+  -h hashsize
+       hash size in bits (224,256,384,512).
+  -s   Search subdirectories.
+  -t   Test (check) CRC sum for each file(s) listed in logfile.
+  -n num
+       Directory depth limit (default=unlimited).
+  -v   Verbose output.
+  dirname
+       Directory name to start. If absent then current in use.
+
+HISTORY
+  TESTSUM command appeared in October 1998
+
+AUTHOR
+  Dmitry V. Stefankov  (dmstef@gmail.com, dstef@tpmail.ru)

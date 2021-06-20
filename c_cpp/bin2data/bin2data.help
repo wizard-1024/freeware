@@ -1,0 +1,11 @@
+
+Convert binary data to data format, version 1.0
+Copyright (C) 2006 Dmitry Stefankov. All Rights Reserved.
+Usage: file2bin [-vfh] [-i infile] [-o outfile]
+       [-l bytes_per_line] [-a ascii_format]
+       -h       this help
+       -v       verbose output (default=no)
+       -f       don't suppress questions (default=yes)
+       -l val   number of bytes per line (default=8)
+       -a val   ASCII format for text (7,8,0=default)
+

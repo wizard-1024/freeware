@@ -1,0 +1,133 @@
+
+		LIST OF FILES
+
+The following files must be present in the archive FREEWARE.ARJ:
+
+
+----------------- general documentation files ----------------------------
+path: \freeware
+
+  README.1st	---  read this first
+  ARCHIVE.DOC   ---  archive file version information
+  LICENSE.DOC	---  user license agreement
+  NOTATION.DOC	---  short description of prefix notation
+  FILELIST.DOC	---  this file
+  ZIP_ARJ.NOT	---  ZIP/ARJ-archive note
+  CHANGES.DOC   ---  package changes/fixes note
+
+----------------- Source code and support files --------------------------
+
+path: \freeware\asc2bin
+  ASC2BIN.PAS   ---  converter from ASCII format (hex,dec,oct) to binary format
+  ASC2BIN.DOC   ---  documentation
+  ASC2BIN.EXE   ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\ascz2bin
+  ASCZ2BIN.PAS  ---  convert from ASCIIZ format to ASM (DB defs) format
+  ASCZ2BIN.DOC  ---  documentation
+  ASCZ2BIN.EXE  ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\atintvec
+  ATINTVEC.PAS  ---  AT ROM interrupt vector table (specially for BIOS makers)
+  ATINTVEC.DOC  ---  documentation
+  ATINTVEC.EXE   ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\bin2asm
+  BIN2ASM.PAS	---  converter from binary to ASM (hexfmt) format
+  BIN2ASM.DOC   ---  documentation
+  BIN2ASM.EXE   ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\bin2bit
+  BIN2BIT.PAS	---  converter from binary to ASM (bitfmt) format
+  BIN2BIT.DOC   ---  documentation
+  BIN2BIT.EXE   ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\bin2file
+  BIN2FILE.PAS	---  put a partial binary image to the file
+  BIN2FILE.DOC  ---  documentation
+  BIN2FILE.EXE  ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\file2bin
+  FILE2BIN.PAS	---  extract a partial binary image from the file
+  FILE2BIN.DOC  ---  documentation
+  FILE2BIN.EXE  ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\findrep
+  FINDREP.PAS	---  find/replace hex/text utility (simple, but easy)
+  FINDREP.DOC   ---  documentation
+  FINDREP.EXE   ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\fmerge
+  FMERGE.PAS	---  merge the binary files (odd/even splitting)
+  FMERGE.DOC    ---  documentation
+  FMERGE.EXE    ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\fsplit
+  FSPLIT.PAS    ---  split a binary file (to even/odd parts)
+  FSPLIT.DOC    ---  documentation
+  FSPLIT.EXE    ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\hd-mboot
+  HD-MBOOT.PAS  ---  Custom Master Boot Record with installation of
+		     user defined type of fixed disk(s)
+  HD-MBOOT.DOC  ---  documentation
+  HD-MBOOT.EXE  ---  executable code (compiled under Turbo Pascal 7.0)
+  IRINA.GIF	---  IRINA JAROWAYA image (GIF format)
+
+path: \freeware\ide-ata
+  IDE-ATA.PAS	---  ATA/IDE drive internal information
+  IDE-ATA.DOC   ---  documentation
+  IDE-ATA.EXE   ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\lprint
+  LPRINT.PAS	---  text formatter for printing with many options
+  MESSAGES.INC  ---  international text messages (ENGLISH/RUSSIAN/GERMANY)
+  LPRINT.DOC    ---  documentation
+  LPRINT.EXE    ---  executable code (compiled under Turbo Pascal 7.0)
+  @LASER.CFG    ---  HP II+ laser printer configuration file (sample)
+  @LPRINT.CFG   ---  EPSON FX-1050 matrix printer configuration file (sample)
+  EVEN_LP.BAT   ---  batch file to print even pages only (sample)
+  ODD_LP.BAT    ---  batch file to print odd  pages only (sample)
+  @KOI2ASC.CFG  ---  KOI-7 to ASCII-8 (russian alternate charmap)
+		     configuration file (sample)
+  KOI2ASC8.BAT  ---  batch file to translate from KOI-7 to 
+                     ASCII-8 (russ.alt.)
+  KOI2ASC8.BIN  ---  character map file for translation from KOI-7
+		     to ASCII-8 (russian alternate coding)
+
+path: \freeware\merge12
+  MERGE12.PAS	---  merge the text pages (1 to 2)
+  MERGE12.DOC   ---  documentation
+  MERGE12.EXE   ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\optexe
+  OPTEXE.PAS    ---  simple DOS executable files optimizer 
+                      (FAR -> NEAR calls for file which size < 64K)
+  OPTEXE.DOC    ---  documentation
+  OPTEXE.EXE    ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\os-boot
+  OS-BOOT.PAS	---  multiple Operating Systems loader
+  OS-BOOT.DOC   ---  documentation
+  OS-BOOT.EXE   ---  executable code (compiled under Turbo Pascal 7.0)
+
+path: \freeware\unix2dos
+  UNIX2DOS.PAS	---  convert UNIX manuals to std DOS text files
+  UNIX2DOS.DOC  ---  documentation
+  UNIX2DOS.EXE  ---  executable code (compiled under Turbo Pascal 7.0)
+
+path:   \freeware\transprn
+  TRANSPRN.PAS  ---  background print converter 
+  TRANSPRN.DOC  ---  documentation
+  TRANSPRN.EXE  ---  executable code (compiled under Turbo Pascal 7.0)
+
+---------------------------- comments ------------------------------------
+
+ !! BEGIN OF  IMPORTANT NOTE !!
+   The author of the ARJ-archiver R.Jung permits the using of his program
+   to transfer the freeware/public domain software without the registration
+   of the copy of the ARJ-archiver.
+ !! END   OF  IMPORTANT NOTE !!
+
+--------------------------- end of file -----------------------------------
+

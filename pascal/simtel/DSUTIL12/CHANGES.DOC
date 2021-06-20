@@ -1,0 +1,9 @@
+*** Release 1.0  (October 28, 1993) ***
+no fixes
+
+*** Release 1.1  (November 28, 1993) ***
+changes/fixes:  IDE-ATA.PAS   (old ver = 1.30, new ver = 1.31)
+	        HD-MBOOT.PAS  (old ver = 1.10, new ver = 1.11)
+
+*** Release 1.2  (January, 1994) ***
+added executable code for all programs only

@@ -1,0 +1,18 @@
+# $Id: file2bin.vc6,v 1.1 2006-12-05 17:42:22+03 dstef Exp root $
+
+TARGET=file2bin
+GETOPT=getopt
+C_FLAGS=-D_MSVC -D_WIN32 /O2 /WX /W3 -D_CRT_SECURE_NO_DEPRECATE=1
+
+all: $(TARGET).exe
+
+$(GETOPT).obj: $(GETOPT).c
+	cl /c $(C_FLAGS) /Fo$(GETOPT).obj $(GETOPT).c
+
+$(TARGET).exe: $(GETOPT).obj $(TARGET).c
+	cl $(C_FLAGS) /Fe$(TARGET).exe $(TARGET).c $(GETOPT).obj
+
+clean: 
+	del $(GETOPT).obj
+	del $(TARGET).obj
+	del $(TARGET).exe

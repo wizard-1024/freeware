@@ -1,0 +1,93 @@
+* File Name:		IDE-ATA.DOC
+* Date:			25 November 1993
+* Version:		1
+* Updates count:	3
+* Purpose:   		Documentation for IDE-ATA.PAS
+* Author:		Dmitry Stefankov
+* Format:		Simplified form of ISO/DIS 6592 standard
+
+
+------------------- Part 1 (Identification) ------------------------------
+
+Program Name:			IDE-ATA.PAS
+Version:			1
+Release:			31
+Date:				25 November 1993
+History:			Original idea was found in the program
+				written by Thomas J. Newman (1991) which is
+				called IDE-INFO. I wrote my program because
+				I found in July of 1992 the sowjet program
+				IDE-BUS in which a stolen code from Newman's 
+				IDE-INFO is present. I was angry. I like 
+				neither a lie and a stealing. I wrote my own
+				version with indication of original source.
+				My Great Thanks to Thomas!
+				I hope this version is reported about
+				IDE-ATA drive all useful info what we need.
+				
+				
+
+------------------- Part 2 (General) -------------------------------------
+
+Responsibility:			no specified
+Supply order:			no specified
+Purpose:			PC hard drive hardware identification
+Area of usage:			utility program for OS/hardware
+Common knowledges:		no specified
+Problem description:		get an internal hardware information
+				about the IBM PC IDE/ATA drive
+Additional knowledges:		no specified
+Agreements and terminology:	standard IBM PC hardware/BIOS/DOS
+				acronyms and abbreviations
+Algorithms and principles:	described in source code
+Function:			(a) IDE-ATA drive internal information
+				(b) Suggested CMOS drive types determination
+				(c) Suggested CMOS drive types determination
+				    for max. drive capacity
+				(d) ROM BIOS HDD types table output
+Characteristics:		application (utility),
+				special class (hardware information)
+Restrictions:			see hardware/software requirements
+Errors processing:		described in source code
+Data safety/protection:		described in source code
+Data for application:		input:  none
+				output:	binary file (size = 512 bytes)
+Programming language:		Turbo Pascal (Version 6.0+)
+Instructions to compile:	TPC  ide-ata.pas , where
+				TPC is a Turbo Pascal command-line compiler
+Requirements for software:	operating system:  PC/MS-DOS (Version 3.0+)
+				other:  	   no specified
+Requirements for hardware:	computer:  IBM PC, IBM PS/2 or compatible 
+				memory:    minimum 128 Kbytes
+				processor: Intel 80186 or higher
+				other:     no specified
+Example to run:			ide-ata.exe 0 nofile cmos , where
+				<0>  -> disable screen paged output
+				<nofile>  -> don't ask the info buffer writing
+				<cmos>  -> output ROM BIOS HDD table
+Miscellaneous:			Magic Keywords: NOFILE, CMOS, MAX
+				Other: no specified
+
+
+------------------- Part 3 (Technical) -----------------------------------
+
+Terminolgy and agreements:	no specified
+Program structure:		single module
+Program listing:		source code available
+Data techical description:	no specified
+Control commands:		no specified
+Work methods:			batch mode
+Messages:			described in source code
+Setup:				no required
+Adaptation:			no specified
+Tests:				no specified
+Service:			no specified
+
+
+------------------- Part 4 (Miscellaneous) -------------------------------
+
+Guarantee:			read license agreement
+Changes to source code:		read license agreement
+Serial number:			no specified
+Price:				read license agreement
+Other:				nothing

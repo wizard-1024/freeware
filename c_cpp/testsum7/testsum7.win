@@ -1,0 +1,86 @@
+# Make TESTSUM7 for Microsoft Windows
+
+# $Id$
+
+#
+# Copyright (c) 1998-2019 Dmitry Stefankov
+# Distributed under license by the Free Software Foundation, Inc. (GPL)
+#
+# This file is part of project TESTSUM7.
+#
+
+
+TARGET=testsum7
+BYTE_ORDER=byte_order
+SHA256=sha256
+SHA512=sha512
+SHA3=sha3
+SHA1=sha1
+MD5=md5
+GOST3411_1994=gost3411-1994
+GOST3411_2012=gost3411-2012
+
+CC=cl
+
+C_FLAGS=-DSPEED=1 /O2 -D_CRT_SECURE_NO_DEPRECATE=1 -D_WIN32=1 -D_WIN32_WINNT=0x0501
+
+C_BYTE_ORDER_FLAGS=-O2  -D_WIN32=1 -D_WIN32_WINNT=0x0501
+C_SHA256_FLAGS=-O2 -D_WIN32=1 -D_WIN32_WINNT=0x0501
+C_SHA512_FLAGS=-O2 -D_WIN32=1 -D_WIN32_WINNT=0x0501
+C_SHA3_FLAGS=-O2 -D_WIN32=1 -D_WIN32_WINNT=0x0501
+C_SHA1_FLAGS=-O2 -D_WIN32=1 -D_WIN32_WINNT=0x0501
+C_MD5_FLAGS=-O2 -D_WIN32=1 -D_WIN32_WINNT=0x0501
+#C_GOST3411_1994_FLAGS=-O2 -D_WIN32=1 -D_WIN32_WINNT=0x0501 -DGENERATE_GOST_LOOKUP_TABLE
+C_GOST3411_1994_FLAGS=-O2 -D_WIN32=1 -D_WIN32_WINNT=0x0501 
+C_GOST3411_2012_FLAGS=-O2 -D_WIN32=1 -D_WIN32_WINNT=0x0501 -D__GOST3411_LITTLE_ENDIAN__
+#C_GOST3411_2012_FLAGS=-O2 -D_WIN32=1 -D_WIN32_WINNT=0x0501 -D__GOST3411_BIG_ENDIAN__
+
+
+OBJS=$(BYTE_ORDER).obj $(SHA256).obj $(SHA512).obj $(SHA3).obj $(SHA1).obj $(MD5).obj $(GOST3411_1994).obj \
+     $(GOST3411_2012).obj
+
+
+all: $(TARGET).exe
+
+
+$(BYTE_ORDER).obj: $(BYTE_ORDER).c $(BYTE_ORDER).h
+	$(CC) /c $(C_BYTE_ORDER_FLAGS) /Fo$(BYTE_ORDER).obj $(BYTE_ORDER).c
+
+$(SHA256).obj: $(SHA256).c $(SHA256).h $(BYTE_ORDER).h
+	$(CC) /c $(C_SHA256_FLAGS) /Fo$(SHA256).obj $(SHA256).c
+
+$(SHA512).obj: $(SHA512).c $(SHA512).h $(BYTE_ORDER).h
+	$(CC) /c $(C_SHA512_FLAGS) /Fo$(SHA512).obj $(SHA512).c
+
+$(SHA3).obj: $(SHA3).c $(SHA3).h $(BYTE_ORDER).h
+	$(CC) /c $(C_SHA3_FLAGS) /Fo$(SHA3).obj $(SHA3).c
+
+$(SHA1).obj: $(SHA1).c $(SHA1).h $(BYTE_ORDER).h
+	$(CC) /c $(C_SHA1_FLAGS) /Fo$(SHA1).obj $(SHA1).c
+
+$(MD5).obj: $(MD5).c $(MD5).h $(BYTE_ORDER).h
+	$(CC) /c $(C_MD5_FLAGS) /Fo$(MD5).obj $(MD5).c
+
+$(GOST3411_1994).obj: $(GOST3411_1994).c $(GOST3411_1994).h $(BYTE_ORDER).h
+	$(CC) /c $(C_GOST3411_1994_FLAGS) /Fo$(GOST3411_1994).obj $(GOST3411_1994).c
+
+$(GOST3411_2012).obj: $(GOST3411_2012).c $(GOST3411_2012).h 
+	$(CC) /c $(C_GOST3411_2012_FLAGS) /Fo$(GOST3411_2012).obj $(GOST3411_2012).c
+
+
+$(TARGET).exe: $(TARGET).c $(OBJS)
+	$(CC) $(C_FLAGS) /Fe$(TARGET).exe $(TARGET).c $(OBJS) 
+
+
+clean: 
+	del $(BYTE_ORDER).obj
+	del $(SHA256).obj
+	del $(SHA512).obj
+	del $(SHA3).obj
+	del $(SHA1).obj
+	del $(MD5).obj
+	del $(GOST3411_1994).obj
+	del $(GOST3411_2012).obj
+	del $(TARGET).obj
+	del $(TARGET).exe
+

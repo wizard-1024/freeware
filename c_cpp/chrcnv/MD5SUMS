@@ -1,0 +1,15 @@
+c4debf48b054323c9dc1ef6d3ec3c8a7 *build.txt
+f9698ae5018aef41cdbfdd752c179fa3 *chrcnv.c
+bbb9aa925b38d8229ff5139a0d9fa95f *chrcnv.mak
+a13b57c64a12f11cec81a57dc383f5cc *chrcnv.man
+a68f0e02e5919544eb7186ac0c115c1a *chrcnv.mdp
+b88372de45f4b1857623d6aa356d26b0 *chrcnv.txt
+26e840228fedfe13d4916a8c154a47d8 *files.txt
+e2c865db4162bed963bfaa9ef6ac18f0 *full256.bin
+72e74e3b8e09f596b703d23ac11fa681 *makefile.bcc
+b7d0e8682fa9d9e3458407a975afa22e *makefile.bsd
+6ad9ee7840d1f57214b8688c1b42188c *makefile.dj
+cd98d0eab85a9614766ed6cf6a427f4a *makefile.lnx
+d56bd0360627e4a098e3db911fbe1d05 *makefile.mgw
+424fc470b643be8f06c9f088e5fdb153 *makefile.msc
+d2c06caa1d53e6f6b15074508d3c18e6 *makefile.vc4
