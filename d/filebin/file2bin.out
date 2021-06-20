@@ -1,0 +1,9 @@
+File2bin Utility (c) 2021 Dmitry Stefankov [D]
+input_filename: test.in
+output_filename: test.out
+input_offset: 10
+out_length: 7
+Allocating buffer memory
+Seek and read input file
+Read 7 bytes done
+Write output file

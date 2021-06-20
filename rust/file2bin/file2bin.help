@@ -1,0 +1,2 @@
+File2bin Utility 2021 (c) Dmitry Stefankov [RUST]
+Usage: file2bin.exe infile outfile ofs len

@@ -1,0 +1,11 @@
+import std.sbinary;;;;nt main(string[] args) {
+  writeln("File2bin Utility (c) 2021 Dmitry Stefankov [D]");
+
+  if (args.length < 5)
+  {
+        writefln ("Usage: %s infile outfile inofs outlen", args[0]);
+        return 1;
+  }
+
+  return 0;
+}

@@ -1,0 +1,2 @@
+Bin2File Utility 2021 (c) Dmitry Stefankov [RUST]
+Usage: bin2file.exe infile outfile in_ofs in_len out_ofs out_len

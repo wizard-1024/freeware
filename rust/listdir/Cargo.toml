@@ -1,0 +1,10 @@
+[package]
+name = "listdir"
+version = "0.1.0"
+authors = ["dmstef@gmail.com"]
+edition = "2018"
+
+[dependencies]
+getopts = "0.2"
+filetime = "0.2"
+chrono = "0.4"

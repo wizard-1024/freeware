@@ -1,0 +1,17 @@
+[package]
+name = "testsum"
+version = "1.0.0"
+authors = ["dmstef@gmail.com"]
+edition = "2018"
+
+[dependencies]
+getopts = "0.2"
+crc16 = "*"
+crc = "2.0"
+md5 = "*"
+hex-literal = "*"
+sha-1 = "*"
+sha2 = "*"
+sha3 = "*"
+streebog = "*"
+gost94 = "*"

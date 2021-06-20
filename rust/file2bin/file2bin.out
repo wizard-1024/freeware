@@ -1,0 +1,9 @@
+File2bin Utility 2021 (c) Dmitry Stefankov [RUST]
+input_filename: test.in
+output_filename: test.out
+input_offset: 10
+output_length: 7
+create variable memory buffer: 7 bytes
+try to file seek
+bytes_read: 7
+data written to file
