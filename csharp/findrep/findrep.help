@@ -1,0 +1,6 @@
+
+GetCommandLineArgs: findrep.exe
+0
+Search and replace hexdec. pattern per file, version 1.0
+Copyright (C) 2021 Dmitry Stefankov. All Rights Reserved.
+Usage : findrep <InFileName> <OutFileName> <SrchPat> <RplPat> <ask>

@@ -1,0 +1,13 @@
+
+Put binary portion from file, version 1.0
+Copyright (C) 2006,2014 Dmitry Stefankov. All Rights Reserved.
+Usage: file2bin [-vfth] [-i infile] [-o outfile]
+       [-l in_offset] [-s in_size] [-p out_offset]
+       -h       this help
+       -v       verbose output (default=no)
+       -f       don't suppress questions (default=yes)
+       -t       don't restore original file timestamp (default=yes)
+       -l val   byte offset on input stream (default=0)
+       -s N     copy N bytes from input stream (default=0)
+       -p val   byte offset on output stream (default=0)
+

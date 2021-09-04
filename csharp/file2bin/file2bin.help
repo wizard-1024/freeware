@@ -1,0 +1,6 @@
+
+GetCommandLineArgs: file2bin.exe
+0
+Extract binary portion from file, version 1.0
+Copyright (C) 2021 Dmitry Stefankov. All Rights Reserved.
+Usage : file2bin <InFileName> <OutFileName> <Offset> <Size>

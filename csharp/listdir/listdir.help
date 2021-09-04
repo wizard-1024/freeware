@@ -1,0 +1,6 @@
+
+GetCommandLineArgs: listdir.exe
+0
+List Directory, version 1.0
+Copyright (C) 2021 Dmitry Stefankov. All Rights Reserved.
+Usage : listdir <Dirname>

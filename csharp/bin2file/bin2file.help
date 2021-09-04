@@ -1,0 +1,6 @@
+
+GetCommandLineArgs: bin2file.exe
+0
+Put file binary portion to file, version 1.0
+Copyright (C) 2021 Dmitry Stefankov. All Rights Reserved.
+Usage : bin2file <InFileName> <OutFileName> <InOffset> <Size> <OutOffset>
