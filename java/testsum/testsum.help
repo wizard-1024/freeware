@@ -1,0 +1,3 @@
+Build checksums per file, version 1.0
+Copyright (c) 2021, Dmitry Stefankov
+Usage: testsum.exe dirname hashsize

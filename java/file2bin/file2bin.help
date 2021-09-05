@@ -1,0 +1,4 @@
+There are 0 arguments given.
+Copy binary portion of file to another file, version 1.0
+Copyright (c) 2021, Dmitry Stefankov
+Usage: file2bin infile outfile offset length
