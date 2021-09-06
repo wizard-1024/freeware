@@ -1,0 +1,4 @@
+program name: C:\nim\sources\freeware\file2bin\file2bin.exe
+Extract binary portion from file, version 1.0
+Copyright (C) 2021 Dmitry Stefankov. All Rights Reserved.
+Usage: file2bin.exe infile outfile offset size

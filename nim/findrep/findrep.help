@@ -1,0 +1,4 @@
+program name: C:\nim\sources\freeware\findrep\findrep.exe
+search & replace patterns for any file, version 1.0
+Copyright (C) 2021 Dmitry Stefankov. All Rights Reserved.
+Usage: findrep infile outfile searchpattern replacepattern
