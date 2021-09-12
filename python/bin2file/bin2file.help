@@ -1,0 +1,3 @@
+Put binary portion from file, version 1.0
+Copyright (C) 2021 Dmitry Stefankov. All Rights Reserved.
+Usage: bin2file.py -i <inputfile> -o <outputfile> -s <infileoffset> -l <infilelen> -p <outfileoffset>

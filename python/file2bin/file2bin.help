@@ -1,0 +1,3 @@
+Extract binary portion from file, version 1.0
+Copyright (C) 2021 Dmitry Stefankov. All Rights Reserved.
+Usage: file2bin.py -i <inputfile> -o <outputfile> -s <fileoffset> -l <filelen>

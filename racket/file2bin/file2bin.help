@@ -1,0 +1,22 @@
+usage: file2bin.exe [ <option> ... ]
+  Copy binary portion of file to another file, version 1.0
+  Copyright (c) 2021, Dmitry Stefankov
+  Usage: file2bin -i infile -o outfile -l offset -s size
+
+<option> is one of
+
+  -i <INFILE>, --infile <INFILE>
+     Set input file
+  -o <OUTFILE>, --outfile <OUTFILE>
+     Set output file
+  -l <OFFSETVALUE>, --offset <OFFSETVALUE>
+     Set input file offset
+  -s <SIZEVALUE>, --size <SIZEVALUE>
+     Set input file size
+  --help, -h
+     Show this help
+  --
+     Do not treat any remaining argument as a switch (at this level)
+
+ Multiple single-letter switches can be combined after
+ one `-`. For example, `-h-` is the same as `-h --`.

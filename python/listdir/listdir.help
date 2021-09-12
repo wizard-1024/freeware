@@ -1,0 +1,3 @@
+List all files per directory, version 1.0
+Copyright (C) 2021 Dmitry Stefankov. All Rights Reserved.
+Usage: findrep.py -i <inputdir>

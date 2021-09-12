@@ -1,0 +1,24 @@
+usage: bin2file.rkt [ <option> ... ]
+  Put binary portion from file, version 1.0
+  Copyright (c) 2021, Dmitry Stefankov
+  Usage: file2bin -i infile -o outfile -l in_offset -s in_size -p out_offset
+
+<option> is one of
+
+  -i <INFILE>, --infile <INFILE>
+     Set input file
+  -o <OUTFILE>, --outfile <OUTFILE>
+     Set output file
+  -l <OFFSETVALUE>, --offset <OFFSETVALUE>
+     Set input file offset
+  -s <SIZEVALUE>, --size <SIZEVALUE>
+     Set input file size
+  -p <OFFSETVALUE>, --offset <OFFSETVALUE>
+     set output file offset
+  --help, -h
+     Show this help
+  --
+     Do not treat any remaining argument as a switch (at this level)
+
+ Multiple single-letter switches can be combined after
+ one `-`. For example, `-h-` is the same as `-h --`.
