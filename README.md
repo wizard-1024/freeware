@@ -1,2 +1,2 @@
 # freeware
- Freeware software
+ Freeware software of Dmitry Stefankov (1990-2022)
