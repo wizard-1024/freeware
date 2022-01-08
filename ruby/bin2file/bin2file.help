@@ -1,0 +1,10 @@
+Put binary portion to file, version 1.0
+Copyright (C) 2022 Dmitry Stefankov. All Rights Reserved.
+Usage: bin2file [options]
+    -i, --input_file FIRSTNAME
+    -o, --output_file LASTNAME
+    -s INFILEOFFSET,
+        --in_file_offset
+    -l, --in_file_size FILESIZE
+    -p OUTFILEOFFSET,
+        --out_file_offset

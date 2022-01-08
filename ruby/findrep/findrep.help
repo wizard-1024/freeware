@@ -1,0 +1,9 @@
+Search and replace patterns for any files, version 1.0
+Copyright (C) 2022 Dmitry Stefankov. All Rights Reserved.
+Usage: findrep [options]
+    -i, --input_file FIRSTNAME
+    -o, --output_file LASTNAME
+    -s SEARCHPATTERN,
+        --search_pattern
+    -r REPLACEPATTERN,
+        --replace_pattern

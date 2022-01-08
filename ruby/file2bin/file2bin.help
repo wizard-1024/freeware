@@ -1,0 +1,7 @@
+Extract binary portion from file, version 1.0
+Copyright (C) 2022 Dmitry Stefankov. All Rights Reserved.
+Usage: file2bin [options]
+    -i, --input_file FIRSTNAME
+    -o, --output_file LASTNAME
+    -s, --in_file_offset FILEOFFSET
+    -l, --out_file_size FILESIZE

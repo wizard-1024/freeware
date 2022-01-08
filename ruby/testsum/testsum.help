@@ -1,0 +1,4 @@
+Build checksums per any file, version 1.0
+Copyright (C) 2022 Dmitry Stefankov. All Rights Reserved.
+Usage: testsum [options]
+    -i, --in_dirname FIRSTNAME

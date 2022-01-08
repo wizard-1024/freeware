@@ -1,0 +1,4 @@
+List all files per directory, version 1.0
+Copyright (C) 2022 Dmitry Stefankov. All Rights Reserved.
+Usage: listdir [options]
+    -i, --in_dirname FIRSTNAME
