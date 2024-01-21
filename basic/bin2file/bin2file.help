@@ -1,0 +1,10 @@
+Put binary portion to file, version 1.0
+Copyright (C) 2024 Dmitry Stefankov. All Rights Reserved.
+Usage: bin2file [-vfh] [-i infile] [-o outfile]
+       [-l in_offset] [-s in_size] [-p out_offset]
+       -h       this help
+       -v       verbose output (default=no)
+       -f       don't suppress questions (default=yes)
+       -l val   byte offset on input stream (default=0)
+       -s N     copy N bytes from input stream (default=0)
+       -p val   byte offset on output stream (default=0)

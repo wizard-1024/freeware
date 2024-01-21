@@ -1,0 +1,9 @@
+Search and replace hexdec. pattern per file, version 1.0
+Copyright (C) 2024 Dmitry Stefankov. All Rights Reserved.
+Usage: findrep [-vfh] [-i infile] [-o outfile]
+       [-s srch_pat] [-r repl_str]
+       -h       this help
+       -v       verbose output (default=no)
+       -f       don't suppress questions (default=yes)
+       -s str   search pattern (default=empty)
+       -r str   replace pattern (default=empty)
