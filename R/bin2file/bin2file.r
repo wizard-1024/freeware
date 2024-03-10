@@ -1,7 +1,5 @@
 # Rscript[.exe] bin2file.r test.in test.out 35 67 13
 
-#Sys.setlocale("LC_ALL","English")
-#Sys.setenv(LANG = "en_US.UTF-8")
 Sys.setenv(LANG='C')
 
 main <- function() {
@@ -17,17 +15,10 @@ main <- function() {
   print(in_size)
   print(out_offset)
   cx <- file(in_filename, "rb")
-  #new_pos = seek(cx, in_offset, rw = "read", origin = "start")
-  #new_pos = seek(cx, in_offset)
-  #print(new_pos)
   seek(cx, in_offset)
   d <- readBin(cx,"raw",in_size,size=1)
   close(cx)
   con <- file(out_filename, "r+b")
-  #new_pos = seek(con, out_offset, origin = "start")
-  #new_pos = seek(con, out_offset)
-  #print(new_pos)
-  #seek(con, out_offset)
   seek(con, out_offset, origin = "start", rw = "write")
   writeBin(d, con, size = 1)
   close(con)
@@ -46,6 +37,4 @@ if (length(commandArgs(trailingOnly = TRUE)) == 0) {
 }
 
 main()
-
-
 

@@ -1,17 +1,9 @@
 # Rscript[.exe] file2bin.r test.in test.out 35 67
 
-#Sys.setlocale("LC_ALL","English")
-#Sys.setenv(LANG = "en_US.UTF-8")
 Sys.setenv(LANG='C')
 
 main <- function() {
   args <- commandArgs(trailingOnly = TRUE)
-  #filename <- args[1]
-  #dat <- read.csv(file = filename, header = FALSE)
-  #mean_per_patient <- apply(dat, 1, mean)
-  #cat(mean_per_patient, sep = "\n")
-  #args <- commandArgs()
-  #cat(args, sep = "\n")
   in_filename <- args[1]
   out_filename <- args[2]
   in_offset <- args[3]
@@ -20,16 +12,6 @@ main <- function() {
   print(out_filename)
   print(in_offset)
   print(in_size)
-  # seek & read binary input file
-  #cx <- file(in_filename, "rb")
-  #seek(cx, in_offset)
-  #d <- readChar(cx, nchar=in_size)
-  #d <- readBin(cx, Byte(), in_size)
-  #close(cx)
-  #con <- file(out_filename, "wb")
-  #writeBin(d, con, in_size, 1, useBytes = TRUE )
-  #writeChar(con,
-  #close(con)
   cx <- file(in_filename, "rb")
   seek(cx, in_offset)
   d <- readBin(cx,"raw",in_size,size=1)
