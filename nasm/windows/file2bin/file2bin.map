@@ -1,0 +1,118 @@
+ file2bin
+
+ Timestamp is 65d0f98c (Sat Feb 17 21:23:08 2024)
+
+ Preferred load address is 0000000000400000
+
+ Start         Length     Name                   Class
+ 0001:00000000 0000069aH .text                   CODE
+ 0001:0000069a 0000002aH .text$mn                CODE
+ 0002:00000000 00000040H .idata$5                DATA
+ 0002:00000040 0000001cH .rdata                  DATA
+ 0002:0000005c 00000000H .edata                  DATA
+ 0002:0000005c 000000d4H .rdata$zzzdbg           DATA
+ 0002:00000130 00000014H .idata$2                DATA
+ 0002:00000144 00000014H .idata$3                DATA
+ 0002:00000158 00000040H .idata$4                DATA
+ 0002:00000198 00000076H .idata$6                DATA
+ 0003:00000000 0000028cH .data                   DATA
+ 0003:0000028c 00002008H .bss                    DATA
+
+  Address         Publics by Value              Rva+Base               Lib:Object
+
+ 0000:00000000       __guard_fids_table         0000000000000000     <absolute>
+ 0000:00000000       ___safe_se_handler_count   0000000000000000     <absolute>
+ 0000:00000000       __guard_longjmp_count      0000000000000000     <absolute>
+ 0000:00000000       ___safe_se_handler_table   0000000000000000     <absolute>
+ 0000:00000000       __guard_longjmp_table      0000000000000000     <absolute>
+ 0000:00000000       __guard_fids_count         0000000000000000     <absolute>
+ 0000:00000000       __guard_iat_count          0000000000000000     <absolute>
+ 0000:00000000       __guard_iat_table          0000000000000000     <absolute>
+ 0000:00000000       __dynamic_value_reloc_table 0000000000000000     <absolute>
+ 0000:00000000       __guard_flags              0000000000000000     <absolute>
+ 0001:00000000       main                       0000000000401000     file2bin.obj
+ 0001:0000069a       GetStdHandle               000000000040169a f   kernel32:KERNEL32.dll
+ 0001:000006a0       WriteFile                  00000000004016a0 f   kernel32:KERNEL32.dll
+ 0001:000006a6       GetCommandLineA            00000000004016a6 f   kernel32:KERNEL32.dll
+ 0001:000006ac       CreateFileA                00000000004016ac f   kernel32:KERNEL32.dll
+ 0001:000006b2       SetFilePointer             00000000004016b2 f   kernel32:KERNEL32.dll
+ 0001:000006b8       ReadFile                   00000000004016b8 f   kernel32:KERNEL32.dll
+ 0001:000006be       CloseHandle                00000000004016be f   kernel32:KERNEL32.dll
+ 0002:00000000       __imp_WriteFile            0000000000402000     kernel32:KERNEL32.dll
+ 0002:00000008       __imp_GetCommandLineA      0000000000402008     kernel32:KERNEL32.dll
+ 0002:00000010       __imp_CreateFileA          0000000000402010     kernel32:KERNEL32.dll
+ 0002:00000018       __imp_SetFilePointer       0000000000402018     kernel32:KERNEL32.dll
+ 0002:00000020       __imp_ReadFile             0000000000402020     kernel32:KERNEL32.dll
+ 0002:00000028       __imp_CloseHandle          0000000000402028     kernel32:KERNEL32.dll
+ 0002:00000030       __imp_GetStdHandle         0000000000402030     kernel32:KERNEL32.dll
+ 0002:00000038       \177KERNEL32_NULL_THUNK_DATA 0000000000402038     kernel32:KERNEL32.dll
+ 0002:00000130       __IMPORT_DESCRIPTOR_KERNEL32 0000000000402130     kernel32:KERNEL32.dll
+ 0002:00000144       __NULL_IMPORT_DESCRIPTOR   0000000000402144     kernel32:KERNEL32.dll
+
+ entry point at        0001:00000000
+
+ Static symbols
+
+ 0001:00000059       NextSym                    0000000000401059     file2bin.obj
+ 0001:00000067       ArgsDone                   0000000000401067     file2bin.obj
+ 0001:000000a7       NextSym1                   00000000004010a7     file2bin.obj
+ 0001:000000ba       TestDelim1                 00000000004010ba     file2bin.obj
+ 0001:000000d8       NextSym2                   00000000004010d8     file2bin.obj
+ 0001:000000f3       StoreInFile                00000000004010f3     file2bin.obj
+ 0001:0000016f       TestDelim2                 000000000040116f     file2bin.obj
+ 0001:0000018d       NextSym3                   000000000040118d     file2bin.obj
+ 0001:000001a8       StoreOutFile               00000000004011a8     file2bin.obj
+ 0001:00000224       TestDelim3                 0000000000401224     file2bin.obj
+ 0001:00000242       NextSym4                   0000000000401242     file2bin.obj
+ 0001:0000025d       StoreInOffset              000000000040125d     file2bin.obj
+ 0001:000002d9       TestDelim4                 00000000004012d9     file2bin.obj
+ 0001:000002f7       NextSym5                   00000000004012f7     file2bin.obj
+ 0001:0000030e       StoreInSize                000000000040130e     file2bin.obj
+ 0001:00000462       MoveFileOfs                0000000000401462     file2bin.obj
+ 0001:000004c0       ReadFileBuf                00000000004014c0     file2bin.obj
+ 0001:0000050f       DisplayReadError           000000000040150f     file2bin.obj
+ 0001:00000546       DoneCloseFile              0000000000401546     file2bin.obj
+ 0001:000005db       DoWriteFile                00000000004015db     file2bin.obj
+ 0001:00000628       DisplayWriteError          0000000000401628     file2bin.obj
+ 0001:0000065a       DoCloseOutputFile          000000000040165a     file2bin.obj
+ 0001:0000066f       Finished                   000000000040166f     file2bin.obj
+ 0001:00000673       ExitProgram                0000000000401673     file2bin.obj
+ 0001:00000676       atoi                       0000000000401676     file2bin.obj
+ 0001:00000676       @fn_atoi                   0000000000401676     file2bin.obj
+ 0001:00000679       atoi.top                   0000000000401679     file2bin.obj
+ 0001:00000699       atoi.done                  0000000000401699     file2bin.obj
+ 0002:00000200       .idata$6                   0000000000402200     kernel32:KERNEL32.dll
+ 0003:00000000       temp_rbx                   0000000000403000     file2bin.obj
+ 0003:00000008       crlf_buf                   0000000000403008     file2bin.obj
+ 0003:0000000b       crlf_len                   000000000040300b     file2bin.obj
+ 0003:00000013       NtlpBuffer                 0000000000403013     file2bin.obj
+ 0003:000000b0       NtnNBytesToWrite           00000000004030b0     file2bin.obj
+ 0003:000000b8       Msg_01_CannotOpenFile      00000000004030b8     file2bin.obj
+ 0003:000000dd       Msg_01_Len                 00000000004030dd     file2bin.obj
+ 0003:000000e5       Msg_02_CannotSeekFile      00000000004030e5     file2bin.obj
+ 0003:0000010a       Msg_02_Len                 000000000040310a     file2bin.obj
+ 0003:00000112       Msg_03_CannotReadFile      0000000000403112     file2bin.obj
+ 0003:00000137       Msg_03_Len                 0000000000403137     file2bin.obj
+ 0003:0000013f       Msg_04_CannotCreateFile    000000000040313f     file2bin.obj
+ 0003:00000166       Msg_04_Len                 0000000000403166     file2bin.obj
+ 0003:0000016e       Msg_05_CannotWriteFile     000000000040316e     file2bin.obj
+ 0003:00000194       Msg_05_Len                 0000000000403194     file2bin.obj
+ 0003:0000019c       InFileNameLen              000000000040319c     file2bin.obj
+ 0003:000001a4       OutFileNameLen             00000000004031a4     file2bin.obj
+ 0003:000001ac       InOffsetLen                00000000004031ac     file2bin.obj
+ 0003:000001b4       InSizeLen                  00000000004031b4     file2bin.obj
+ 0003:000001bc       InFileName                 00000000004031bc     file2bin.obj
+ 0003:000001f6       OutFileName                00000000004031f6     file2bin.obj
+ 0003:00000230       InOffsetBuf                0000000000403230     file2bin.obj
+ 0003:0000023a       InSizeBuf                  000000000040323a     file2bin.obj
+ 0003:00000244       NtOutConsoleHandle         0000000000403244     file2bin.obj
+ 0003:0000024c       NtnArgsBuffer              000000000040324c     file2bin.obj
+ 0003:00000254       NtArgsBufCount             0000000000403254     file2bin.obj
+ 0003:0000025c       InOffsetVal                000000000040325c     file2bin.obj
+ 0003:00000264       InSizeVal                  0000000000403264     file2bin.obj
+ 0003:0000026c       fHandle                    000000000040326c     file2bin.obj
+ 0003:00000274       lpNumberOfBytesWritten     0000000000403274     file2bin.obj
+ 0003:0000027c       lpNumberOfBytesRead        000000000040327c     file2bin.obj
+ 0003:00000284       fOutHandle                 0000000000403284     file2bin.obj
+ 0003:0000028c       NtlpNBytesWritten          000000000040328c     file2bin.obj
+ 0003:00000294       readbuffer                 0000000000403294     file2bin.obj

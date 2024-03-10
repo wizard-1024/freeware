@@ -1,0 +1,4 @@
+Extract binary portion from file, version 1.0
+Copyright (C) 2024 Dmitry Stefankov. All Rights Reserved.
+Usage: file2bin infile outfile in_offset in_size
+file2bin.exe  

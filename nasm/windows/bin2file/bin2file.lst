@@ -1,0 +1,748 @@
+     1                                  ; Microsoft Windows sample code
+     2                                  ; with known limitations
+     3                                  ; Dmitry Stefankov Feb-2024
+     4                                  
+     5                                  global main
+     6                                  extern GetStdHandle
+     7                                  extern WriteFile
+     8                                  extern GetCommandLineA
+     9                                  extern CreateFileA
+    10                                  extern WriteFile
+    11                                  extern SetFilePointer
+    12                                  extern ReadFile
+    13                                  extern CloseHandle
+    14                                  
+    15                                  
+    16                                  FILE_BEGIN equ 0
+    17                                  FILE_CURRENT equ 1
+    18                                  FILE_END equ 2
+    19                                  
+    20                                  CREATE_NEW equ 1
+    21                                  CREATE_ALWAYS equ 2
+    22                                  OPEN_EXISTING equ 3
+    23                                  OPEN_ALWAYS equ 4
+    24                                  TRUNCATE_EXISTING equ 5
+    25                                  
+    26                                  INVALID_SET_FILE_POINTER equ -1
+    27                                  INVALID_HANDLE_VALUE equ -1
+    28                                  
+    29                                  DELETE equ 10000h
+    30                                  READ_CONTROL equ 20000h
+    31                                  WRITE_DAC equ 40000h
+    32                                  WRITE_OWNER equ 80000h
+    33                                  SYNCHRONIZE equ 100000h
+    34                                  STANDARD_RIGHTS_READ equ READ_CONTROL
+    35                                  STANDARD_RIGHTS_WRITE equ READ_CONTROL
+    36                                  STANDARD_RIGHTS_EXECUTE equ READ_CONTROL
+    37                                  STANDARD_RIGHTS_REQUIRED equ 0F0000h
+    38                                  STANDARD_RIGHTS_ALL equ 1F0000h
+    39                                  SPECIFIC_RIGHTS_ALL equ 0FFFFh
+    40                                  
+    41                                  FILE_READ_DATA equ 1h
+    42                                  FILE_LIST_DIRECTORY equ 1h
+    43                                  FILE_WRITE_DATA equ 2h
+    44                                  FILE_ADD_FILE equ 2h
+    45                                  FILE_APPEND_DATA equ 4h
+    46                                  FILE_ADD_SUBDIRECTORY equ 4h
+    47                                  FILE_CREATE_PIPE_INSTANCE equ 4h
+    48                                  FILE_READ_EA equ 8h
+    49                                  FILE_READ_PROPERTIES equ FILE_READ_EA
+    50                                  FILE_WRITE_EA equ 10h
+    51                                  FILE_WRITE_PROPERTIES equ FILE_WRITE_EA
+    52                                  FILE_EXECUTE equ 20h
+    53                                  FILE_TRAVERSE equ 20h
+    54                                  FILE_DELETE_CHILD equ 40h
+    55                                  FILE_READ_ATTRIBUTES equ 80h
+    56                                  FILE_WRITE_ATTRIBUTES equ 100h
+    57                                  FILE_ALL_ACCESS equ STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|1FFh
+    58                                  FILE_GENERIC_READ equ STANDARD_RIGHTS_READ|FILE_READ_DATA|FILE_READ_ATTRIBUTES|FILE_READ_EA|SYNCHRONIZE
+    59                                  FILE_GENERIC_WRITE equ STANDARD_RIGHTS_WRITE|FILE_WRITE_DATA|FILE_WRITE_ATTRIBUTES|FILE_WRITE_EA|FILE_APPEND_DATA|SYNCHRONIZE
+    60                                  FILE_GENERIC_EXECUTE equ STANDARD_RIGHTS_EXECUTE|FILE_READ_ATTRIBUTES|FILE_EXECUTE|SYNCHRONIZE
+    61                                  FILE_SHARE_READ equ 1h
+    62                                  FILE_SHARE_WRITE equ 2h
+    63                                  FILE_ATTRIBUTE_READONLY equ 1h
+    64                                  FILE_ATTRIBUTE_HIDDEN equ 2h
+    65                                  FILE_ATTRIBUTE_SYSTEM equ 4h
+    66                                  FILE_ATTRIBUTE_DIRECTORY equ 10h
+    67                                  FILE_ATTRIBUTE_ARCHIVE equ 20h
+    68                                  FILE_ATTRIBUTE_NORMAL equ 80h
+    69                                  FILE_ATTRIBUTE_TEMPORARY equ 100h
+    70                                  FILE_ATTRIBUTE_COMPRESSED equ 800h
+    71                                  FILE_NOTIFY_CHANGE_FILE_NAME equ 1h
+    72                                  FILE_NOTIFY_CHANGE_DIR_NAME equ 2h
+    73                                  FILE_NOTIFY_CHANGE_ATTRIBUTES equ 4h
+    74                                  FILE_NOTIFY_CHANGE_SIZE equ 8h
+    75                                  FILE_NOTIFY_CHANGE_LAST_WRITE equ 10h
+    76                                  FILE_NOTIFY_CHANGE_SECURITY equ 100h
+    77                                  
+    78                                  GENERIC_READ equ 80000000h
+    79                                  GENERIC_WRITE equ 40000000h
+    80                                  GENERIC_EXECUTE equ 20000000h
+    81                                  GENERIC_ALL equ 10000000h
+    82                                  
+    83                                  
+    84                                  section .text
+    85                                  main:
+    86                                  ;    int     3
+    87 00000000 4883EC28                    sub     rsp, 40          ; reserve shadow spaceand align the stack by 16
+    88 00000004 B9F5FFFFFF                  mov     ecx, -11         ; GetStdHandle takes a DWORD arg, write it as 32-bit.  This is STD_OUTPUT_HANDLE
+    89 00000009 E8(00000000)                call    GetStdHandle
+    90                                  
+    91 0000000E 4889C1                      mov     rcx, rax
+    92 00000011 48890425[89020000]          mov     [NtOutConsoleHandle], rax
+    93 00000019 48BA-                       mov     rdx, NtlpBuffer         ; or better, lea rdx, [rel NtlpBuffer]
+    93 0000001B [1300000000000000] 
+    94 00000023 4C8B0425[B5000000]          mov     r8, [NtnNBytesToWrite]  ; or better, make it an EQU constant for mov r8d, bytes_to_write
+    95 0000002B 49B9-                       mov     r9, NtlpNBytesWritten   ; first 4 args in regs
+    95 0000002D [0000000000000000] 
+    96 00000035 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+    97 0000003E E8(00000000)                call    WriteFile
+    98                                  
+    99 00000043 E8(00000000)                call    GetCommandLineA
+   100 00000048 48890425[91020000]          mov     [NtnArgsBuffer], rax
+   101                                  
+   102 00000050 4889C3                      mov     rbx, rax
+   103 00000053 4831C9                      xor     rcx, rcx
+   104 00000056 4831C0                      xor     rax, rax
+   105                                  NextSym:
+   106 00000059 8A03                        mov     al, byte [rbx]
+   107 0000005B 08C0                        or      al, al
+   108                                  ;    jnz     ArgsDone
+   109 0000005D 7408                        jz      ArgsDone
+   110 0000005F 48FFC3                      inc     rbx
+   111 00000062 48FFC1                      inc     rcx
+   112 00000065 EBF2                        jmp     NextSym 
+   113                                  
+   114                                  ArgsDone:
+   115 00000067 48890C25[99020000]          mov     [NtArgsBufCount], rcx
+   116                                  
+   117 0000006F 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   118 00000077 488B1425[91020000]          mov     rdx, [NtnArgsBuffer]
+   119                                  ;    mov     r8, 50
+   120 0000007F 4C8B0425[99020000]          mov     r8, [NtArgsBufCount]
+   121 00000087 49B9-                       mov     r9, NtlpNBytesWritten
+   121 00000089 [0000000000000000] 
+   122 00000091 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   123 0000009A E8(00000000)                call    WriteFile
+   124                                  
+   125                                  ; scan command arguments
+   126 0000009F 488B1C25[91020000]          mov     rbx, [NtnArgsBuffer]
+   127                                  NextSym1:
+   128 000000A7 8A03                        mov     al, byte [rbx]
+   129 000000A9 08C0                        or      al, al
+   130 000000AB 0F84E8060000                jz      Finished
+   131 000000B1 3C20                        cmp     al,' '
+   132 000000B3 7405                        je      TestDelim1
+   133 000000B5 48FFC3                      inc     rbx
+   134 000000B8 EBED                        jmp     NextSym1
+   135                                  
+   136                                  TestDelim1:
+   137 000000BA 48FFC3                      inc     rbx
+   138 000000BD 8A03                        mov     al, byte [rbx]
+   139 000000BF 08C0                        or      al, al
+   140 000000C1 0F84D2060000                jz      Finished
+   141 000000C7 3C20                        cmp     al,' '
+   142 000000C9 74EF                        je      TestDelim1
+   143                                  
+   144                                  ; extract input filename
+   145 000000CB 4831C9                      xor     rcx,rcx
+   146 000000CE 48BF-                       mov     rdi, InFileName
+   146 000000D0 [F701000000000000] 
+   147                                  NextSym2:
+   148 000000D8 8A03                        mov     al, byte [rbx]
+   149 000000DA 08C0                        or      al, al
+   150 000000DC 0F84B7060000                jz      Finished 
+   151 000000E2 3C20                        cmp     al,' '
+   152 000000E4 740D                        je      StoreInFile
+   153 000000E6 8807                        mov     byte [rdi], al
+   154 000000E8 48FFC3                      inc     rbx
+   155 000000EB 48FFC7                      inc     rdi
+   156 000000EE 48FFC1                      inc     rcx
+   157 000000F1 EBE5                        jmp     NextSym2
+   158                                  
+   159                                  StoreInFile:
+   160 000000F3 48890C25[CF010000]          mov     [InFileNameLen], rcx
+   161 000000FB 48891C25[00000000]          mov     [temp_rbx], rbx
+   162                                  ; print cmd arg
+   163 00000103 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   164 0000010B 48BA-                       mov     rdx, crlf_buf 
+   164 0000010D [0800000000000000] 
+   165 00000115 4C8B0425[0B000000]          mov     r8, [crlf_len]
+   166 0000011D 49B9-                       mov     r9, NtlpNBytesWritten
+   166 0000011F [0000000000000000] 
+   167 00000127 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   168 00000130 E8(00000000)                call    WriteFile
+   169                                  ; test print arg 1
+   170 00000135 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   171 0000013D 48BA-                       mov     rdx, InFileName
+   171 0000013F [F701000000000000] 
+   172 00000147 4C8B0425[CF010000]          mov     r8, [InFileNameLen]
+   173 0000014F 49B9-                       mov     r9, NtlpNBytesWritten
+   173 00000151 [0000000000000000] 
+   174 00000159 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   175 00000162 E8(00000000)                call    WriteFile
+   176                                  
+   177 00000167 488B1C25[00000000]          mov     rbx, [temp_rbx]
+   178                                  TestDelim2:
+   179 0000016F 48FFC3                      inc     rbx
+   180 00000172 8A03                        mov     al, byte [rbx]
+   181 00000174 08C0                        or      al, al
+   182 00000176 0F841D060000                jz      Finished
+   183 0000017C 3C20                        cmp     al,' '
+   184 0000017E 74EF                        je      TestDelim2
+   185                                  
+   186                                  ; extract output filename
+   187 00000180 4831C9                      xor     rcx,rcx
+   188 00000183 48BF-                       mov     rdi, OutFileName
+   188 00000185 [3102000000000000] 
+   189                                  NextSym3:
+   190 0000018D 8A03                        mov     al, byte [rbx]
+   191 0000018F 08C0                        or      al, al
+   192 00000191 0F8402060000                jz      Finished 
+   193 00000197 3C20                        cmp     al,' '
+   194 00000199 740D                        je      StoreOutFile
+   195 0000019B 8807                        mov     byte [rdi], al
+   196 0000019D 48FFC3                      inc     rbx
+   197 000001A0 48FFC7                      inc     rdi
+   198 000001A3 48FFC1                      inc     rcx
+   199 000001A6 EBE5                        jmp     NextSym3
+   200                                  
+   201                                  StoreOutFile:
+   202 000001A8 48890C25[D7010000]          mov     [OutFileNameLen], rcx
+   203 000001B0 48891C25[00000000]          mov     [temp_rbx], rbx
+   204                                  ; print cmd arg
+   205 000001B8 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   206 000001C0 48BA-                       mov     rdx, crlf_buf 
+   206 000001C2 [0800000000000000] 
+   207 000001CA 4C8B0425[0B000000]          mov     r8, [crlf_len]
+   208 000001D2 49B9-                       mov     r9, NtlpNBytesWritten
+   208 000001D4 [0000000000000000] 
+   209 000001DC 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   210 000001E5 E8(00000000)                call    WriteFile
+   211                                  ; test print arg 2
+   212 000001EA 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   213 000001F2 48BA-                       mov     rdx, OutFileName
+   213 000001F4 [3102000000000000] 
+   214 000001FC 4C8B0425[D7010000]          mov     r8, [OutFileNameLen]
+   215 00000204 49B9-                       mov     r9, NtlpNBytesWritten
+   215 00000206 [0000000000000000] 
+   216 0000020E 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   217 00000217 E8(00000000)                call    WriteFile
+   218                                  
+   219 0000021C 488B1C25[00000000]          mov     rbx, [temp_rbx]
+   220                                  TestDelim3:
+   221 00000224 48FFC3                      inc     rbx
+   222 00000227 8A03                        mov     al, byte [rbx]
+   223 00000229 08C0                        or      al, al
+   224 0000022B 0F8468050000                jz      Finished
+   225 00000231 3C20                        cmp     al,' '
+   226 00000233 74EF                        je      TestDelim3
+   227                                  
+   228                                  ; extract input offset number
+   229 00000235 4831C9                      xor     rcx,rcx
+   230 00000238 48BF-                       mov     rdi, InOffsetBuf
+   230 0000023A [6B02000000000000] 
+   231                                  NextSym4:
+   232 00000242 8A03                        mov     al, byte [rbx]
+   233 00000244 08C0                        or      al, al
+   234 00000246 0F844D050000                jz      Finished 
+   235 0000024C 3C20                        cmp     al,' '
+   236 0000024E 740D                        je      StoreInOffset
+   237 00000250 8807                        mov     byte [rdi], al
+   238 00000252 48FFC3                      inc     rbx
+   239 00000255 48FFC7                      inc     rdi
+   240 00000258 48FFC1                      inc     rcx
+   241 0000025B EBE5                        jmp     NextSym4
+   242                                  
+   243                                  StoreInOffset:
+   244 0000025D 48890C25[DF010000]          mov     [InOffsetLen], rcx
+   245 00000265 48891C25[00000000]          mov     [temp_rbx], rbx
+   246                                  ; print cmd arg
+   247 0000026D 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   248 00000275 48BA-                       mov     rdx, crlf_buf 
+   248 00000277 [0800000000000000] 
+   249 0000027F 4C8B0425[0B000000]          mov     r8, [crlf_len]
+   250 00000287 49B9-                       mov     r9, NtlpNBytesWritten
+   250 00000289 [0000000000000000] 
+   251 00000291 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   252 0000029A E8(00000000)                call    WriteFile
+   253                                  ; test print arg 3
+   254 0000029F 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   255 000002A7 48BA-                       mov     rdx, InOffsetBuf
+   255 000002A9 [6B02000000000000] 
+   256 000002B1 4C8B0425[DF010000]          mov     r8, [InOffsetLen]
+   257 000002B9 49B9-                       mov     r9, NtlpNBytesWritten
+   257 000002BB [0000000000000000] 
+   258 000002C3 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   259 000002CC E8(00000000)                call    WriteFile
+   260                                  
+   261 000002D1 488B1C25[00000000]          mov     rbx, [temp_rbx]
+   262                                  TestDelim4:
+   263 000002D9 48FFC3                      inc     rbx
+   264 000002DC 8A03                        mov     al, byte [rbx]
+   265 000002DE 08C0                        or      al, al
+   266 000002E0 0F84B3040000                jz      Finished
+   267 000002E6 3C20                        cmp     al,' '
+   268 000002E8 74EF                        je      TestDelim4
+   269                                  
+   270                                  ; extract input size number
+   271 000002EA 4831C9                      xor     rcx,rcx
+   272 000002ED 48BF-                       mov     rdi, InSizeBuf
+   272 000002EF [7F02000000000000] 
+   273                                  NextSym5:
+   274 000002F7 8A03                        mov     al, byte [rbx]
+   275 000002F9 08C0                        or      al, al
+   276 000002FB 0F8498040000                jz      Finished
+   277                                  ;   jz      StoreInSize
+   278 00000301 3C20                        cmp     al,' '
+   279 00000303 740D                        je      StoreInSize
+   280 00000305 8807                        mov     byte [rdi], al
+   281 00000307 48FFC3                      inc     rbx
+   282 0000030A 48FFC7                      inc     rdi
+   283 0000030D 48FFC1                      inc     rcx
+   284 00000310 EBE5                        jmp     NextSym5
+   285                                  
+   286                                  StoreInSize:
+   287 00000312 48890C25[EF010000]          mov     [InSizeLen], rcx
+   288 0000031A 48891C25[00000000]          mov     [temp_rbx], rbx
+   289                                  ; print cmd arg
+   290 00000322 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   291 0000032A 48BA-                       mov     rdx, crlf_buf 
+   291 0000032C [0800000000000000] 
+   292 00000334 4C8B0425[0B000000]          mov     r8, [crlf_len]
+   293 0000033C 49B9-                       mov     r9, NtlpNBytesWritten
+   293 0000033E [0000000000000000] 
+   294 00000346 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   295 0000034F E8(00000000)                call    WriteFile
+   296                                  ; test print arg 4
+   297 00000354 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   298 0000035C 48BA-                       mov     rdx, InSizeBuf
+   298 0000035E [7F02000000000000] 
+   299 00000366 4C8B0425[EF010000]          mov     r8, [InSizeLen]
+   300 0000036E 49B9-                       mov     r9, NtlpNBytesWritten
+   300 00000370 [0000000000000000] 
+   301 00000378 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   302 00000381 E8(00000000)                call    WriteFile
+   303                                  
+   304                                  ; test for delimiters
+   305 00000386 488B1C25[00000000]          mov     rbx, [temp_rbx]
+   306                                  TestDelim5:
+   307 0000038E 48FFC3                      inc     rbx
+   308 00000391 8A03                        mov     al, byte [rbx]
+   309 00000393 08C0                        or      al, al
+   310 00000395 0F84FE030000                jz      Finished
+   311 0000039B 3C20                        cmp     al,' '
+   312 0000039D 74EF                        je      TestDelim5
+   313                                  
+   314                                  ; extract output offset number
+   315 0000039F 4831C9                      xor     rcx,rcx
+   316 000003A2 48BF-                       mov     rdi, OutOffsetBuf
+   316 000003A4 [7502000000000000] 
+   317                                  NextSym6:
+   318 000003AC 8A03                        mov     al, byte [rbx]
+   319 000003AE 08C0                        or      al, al
+   320                                  ;   jz      Finished
+   321 000003B0 7411                        jz      StoreOutOffset
+   322 000003B2 3C20                        cmp     al,' '
+   323 000003B4 740D                        je      StoreOutOffset
+   324 000003B6 8807                        mov     byte [rdi], al
+   325 000003B8 48FFC3                      inc     rbx
+   326 000003BB 48FFC7                      inc     rdi
+   327 000003BE 48FFC1                      inc     rcx
+   328 000003C1 EBE9                        jmp     NextSym6
+   329                                  
+   330                                  StoreOutOffset:
+   331 000003C3 48890C25[E7010000]          mov     [OutOffsetLen], rcx
+   332 000003CB 48891C25[00000000]          mov     [temp_rbx], rbx
+   333                                  ; print cmd arg
+   334 000003D3 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   335 000003DB 48BA-                       mov     rdx, crlf_buf 
+   335 000003DD [0800000000000000] 
+   336 000003E5 4C8B0425[0B000000]          mov     r8, [crlf_len]
+   337 000003ED 49B9-                       mov     r9, NtlpNBytesWritten
+   337 000003EF [0000000000000000] 
+   338 000003F7 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   339 00000400 E8(00000000)                call    WriteFile
+   340                                  ; test print arg 5
+   341 00000405 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   342 0000040D 48BA-                       mov     rdx, OutOffsetBuf
+   342 0000040F [7502000000000000] 
+   343 00000417 4C8B0425[E7010000]          mov     r8, [OutOffsetLen]
+   344 0000041F 49B9-                       mov     r9, NtlpNBytesWritten
+   344 00000421 [0000000000000000] 
+   345 00000429 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   346 00000432 E8(00000000)                call    WriteFile
+   347                                  
+   348                                  ; print cmd arg
+   349 00000437 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   350 0000043F 48BA-                       mov     rdx, crlf_buf 
+   350 00000441 [0800000000000000] 
+   351 00000449 4C8B0425[0B000000]          mov     r8, [crlf_len]
+   352 00000451 49B9-                       mov     r9, NtlpNBytesWritten
+   352 00000453 [0000000000000000] 
+   353 0000045B 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   354 00000464 E8(00000000)                call    WriteFile
+   355                                  
+   356                                  
+   357                                  ; process numeric values
+   358 00000469 48BA-                       mov     rdx, InOffsetBuf ; our string
+   358 0000046B [6B02000000000000] 
+   359 00000473 E828030000                  call    @fn_atoi
+   360 00000478 48890425[A1020000]          mov     [InOffsetVal], rax
+   361                                  
+   362 00000480 48BA-                       mov     rdx, InSizeBuf ; our string
+   362 00000482 [7F02000000000000] 
+   363 0000048A E811030000                  call    @fn_atoi
+   364 0000048F 48890425[A9020000]          mov     [InSizeVal], rax
+   365                                  
+   366 00000497 48BA-                       mov     rdx, OutOffsetBuf ; our string
+   366 00000499 [7502000000000000] 
+   367 000004A1 E8FA020000                  call    @fn_atoi
+   368 000004A6 48890425[B1020000]          mov     [OutOffsetVal], rax
+   369                                  
+   370                                  ;   jmp     Finished
+   371                                  
+   372                                  ; ================== read input file
+   373                                  
+   374                                  ;HANDLE CreateFileA(
+   375                                  ;  LPCSTR                lpFileName,
+   376                                  ;  DWORD                 dwDesiredAccess,
+   377                                  ;  DWORD                 dwShareMode,
+   378                                  ;  LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+   379                                  ;  DWORD                 dwCreationDisposition,
+   380                                  ;  DWORD                 dwFlagsAndAttributes,
+   381                                  ;  HANDLE                hTemplateFile
+   382                                  ;);   
+   383                                  
+   384 000004AE 4883EC38                    sub     rsp, 38h
+   385 000004B2 488364243000                and     qword [rsp + 30h], 0          ; arg7: 0
+   386 000004B8 48C744242850000000          mov     qword [rsp + 28h], 80         ; arg6: FILE_ATTRIBUTE_NORMAL
+   387 000004C1 48C744242003000000          mov     qword [rsp + 20h],  3         ; arg5: OPEN_EXISTING
+   388 000004CA 4531C9                      xor     r9d, r9d                      ; arg4: 0
+   389 000004CD 41B801000000                mov     r8d, 1                        ; arg3: FILE_SHARE_READ
+   390 000004D3 BA00000080                  mov     rdx, 80000000h                ; arg2: GENERIC_READ
+   391 000004D8 488D0C25[F7010000]          lea	    rcx, [InFileName]             ; arg1: like "CreateFile.asm"
+   392 000004E0 E8(00000000)                call    CreateFileA
+   393 000004E5 4883C438                    add     rsp, 38h
+   394 000004E9 48890425[B9020000]          mov     [fHandle], rax
+   395 000004F1 4883F8FF                    cmp     rax, INVALID_HANDLE_VALUE
+   396 000004F5 7537                        jne     MoveFileOfs
+   397                                  ; display error message and terminate
+   398 000004F7 488B0C25[89020000]          mov     rcx, [NtOutConsoleHandle]
+   399 000004FF 48BA-                       mov     rdx, Msg_01_CannotOpenFile
+   399 00000501 [BD00000000000000] 
+   400 00000509 4C8B0425[E2000000]          mov     r8, [Msg_01_Len]
+   401 00000511 49B9-                       mov     r9, NtlpNBytesWritten
+   401 00000513 [0000000000000000] 
+   402 0000051B 48C744242000000000          mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   403 00000524 E8(00000000)                call    WriteFile
+   404 00000529 E96B020000                  jmp     Finished
+   405                                  
+   406                                  MoveFileOfs:
+   407                                  ;DWORD SetFilePointer(
+   408                                  ;  HANDLE hFile,
+   409                                  ;  LONG   lDistanceToMove,
+   410                                  ;  PLONG  lpDistanceToMoveHigh,
+   411                                  ;  DWORD  dwMoveMethod
+   412                                  ;);   
+   413 0000052E 488B0C25[B9020000]      	mov 	rcx, [fHandle]			;handle
+   414 00000536 488B1425[A1020000]      	mov 	rdx, [InOffsetVal]		;low bits of position
+   415 0000053E 41B800000000            	mov 	r8, 0         			;no high order bits in position
+   416 00000544 41B900000000            	mov 	r9, 0     		        ;start from beginning = FILE_BEGIN
+   417 0000054A E8(00000000)            	call	SetFilePointer
+   418 0000054F 4883F8FF                        cmp     rax, INVALID_SET_FILE_POINTER
+   419 00000553 7537                            jne     ReadFileBuf
+   420                                  ; display error message and terminate
+   421 00000555 488B0C25[89020000]              mov     rcx, [NtOutConsoleHandle]
+   422 0000055D 48BA-                           mov     rdx, Msg_02_CannotSeekFile
+   422 0000055F [EA00000000000000] 
+   423 00000567 4C8B0425[0F010000]              mov     r8, [Msg_02_Len]
+   424 0000056F 49B9-                           mov     r9, NtlpNBytesWritten
+   424 00000571 [0000000000000000] 
+   425 00000579 48C744242000000000              mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   426 00000582 E8(00000000)                    call    WriteFile
+   427 00000587 E90D020000                      jmp     Finished
+   428                                  
+   429                                  ReadFileBuf:
+   430                                  ;BOOL ReadFile(
+   431                                  ;  HANDLE       hFile,
+   432                                  ;  LPCVOID      lpBuffer,
+   433                                  ;  DWORD        nNumberOfBytesToRead,
+   434                                  ;  LPDWORD      lpNumberOfBytesRead,
+   435                                  ;  LPOVERLAPPED lpOverlapped
+   436                                  ;);           
+   437                                  ;bytesRead equ [rsp+40]
+   438 0000058C 4883EC38                        sub     rsp, 56
+   439 00000590 4C8B0425[A9020000]              mov     r8, [InSizeVal]               ; 3rd arg - buffer size
+   440 00000598 488B0C25[B9020000]              mov     rcx, [fHandle]                ; 1st arg - file descriptor
+   441 000005A0 488D1425[08000000]              lea     rdx, [readbuffer]             ; 2nd arg - buffer address
+   442 000005A8 49B9-                           mov     r9, lpNumberOfBytesRead        ; 4th arg - bytes read during call
+   442 000005AA [C902000000000000] 
+   443 000005B2 48C744242000000000              mov     qword [rsp + 32], 0           ; 5th arg - 0 (no overlapped)
+   444 000005BB E8(00000000)                    call    ReadFile       
+   445 000005C0 488B0C25[C9020000]              mov    rcx, [lpNumberOfBytesRead]
+   446 000005C8 4809C0                          or     rax, rax
+   447 000005CB 4883C438                        add    rsp, 56
+   448 000005CF 740A                            jz     DisplayReadError
+   449 000005D1 483B0C25[A9020000]              cmp    rcx, [InSizeVal]
+   450 000005D9 7437                            je     DoneCloseInFile
+   451                                  DisplayReadError:    
+   452                                  ; display error message and terminate
+   453 000005DB 488B0C25[89020000]              mov     rcx, [NtOutConsoleHandle]
+   454 000005E3 48BA-                           mov     rdx, Msg_03_CannotReadFile
+   454 000005E5 [1701000000000000] 
+   455 000005ED 4C8B0425[3C010000]              mov     r8, [Msg_03_Len]
+   456 000005F5 49B9-                           mov     r9, NtlpNBytesWritten
+   456 000005F7 [0000000000000000] 
+   457 000005FF 48C744242000000000              mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   458 00000608 E8(00000000)                    call    WriteFile
+   459 0000060D E987010000                      jmp     Finished
+   460                                  
+   461                                  DoneCloseInFile:
+   462                                  ;BOOL WINAPI CloseHandle(
+   463                                  ;  _In_ HANDLE hObject
+   464                                  ;);
+   465 00000612 4883EC28                        sub     rsp, 40
+   466 00000616 488B0C25[B9020000]              mov     rcx, [fHandle]      
+   467 0000061E E8(00000000)                    call    CloseHandle
+   468 00000623 4883C428                        add     rsp, 40
+   469                                  
+   470                                  ; ==================  write output file
+   471                                  
+   472                                  ;HANDLE CreateFileA(
+   473                                  ;  LPCSTR                lpFileName,
+   474                                  ;  DWORD                 dwDesiredAccess,
+   475                                  ;  DWORD                 dwShareMode,
+   476                                  ;  LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+   477                                  ;  DWORD                 dwCreationDisposition,
+   478                                  ;  DWORD                 dwFlagsAndAttributes,
+   479                                  ;  HANDLE                hTemplateFile
+   480                                  ;);   
+   481                                  
+   482                                  ; open output file
+   483 00000627 4883EC38                        sub     rsp, 56
+   484 0000062B 488D0C25[31020000]              lea     rcx, [OutFileName]    ; filename
+   485 00000633 BA000000C0                      mov     rdx, 0C0000000h       ; read/write
+   486 00000638 4D31C0                          xor     r8, r8                ; exclusive access
+   487 0000063B 4D31C9                          xor     r9, r9                ; no security
+   488 0000063E 41BA03000000                    mov     r10, 3                ; open existing
+   489 00000644 4C89542420                      mov     [rsp + 32], r10
+   490 00000649 41BA80000000                    mov     r10, 128              ; normal attributes
+   491 0000064F 4C89542428                      mov     [rsp + 40], r10 
+   492 00000654 4C894C2430                      mov     [rsp + 48], r9        ; NULL - no template
+   493 00000659 E8(00000000)                    call    CreateFileA
+   494 0000065E 4883C438                        add     rsp, 56
+   495 00000662 48890425[D1020000]              mov     [fOutHandle], rax
+   496 0000066A 4883F8FF                        cmp     rax, INVALID_HANDLE_VALUE
+   497 0000066E 7537                            jne     DoSeekOutFile
+   498                                  ; display error message and terminate
+   499 00000670 488B0C25[89020000]              mov     rcx, [NtOutConsoleHandle]
+   500 00000678 48BA-                           mov     rdx, Msg_04_CannotCreateFile
+   500 0000067A [4401000000000000] 
+   501 00000682 4C8B0425[6B010000]              mov     r8, [Msg_04_Len]
+   502 0000068A 49B9-                           mov     r9, NtlpNBytesWritten
+   502 0000068C [0000000000000000] 
+   503 00000694 48C744242000000000              mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   504 0000069D E8(00000000)                    call    WriteFile
+   505 000006A2 E9F2000000                      jmp     Finished
+   506                                  
+   507                                  ;
+   508                                  DoSeekOutFile:
+   509                                  ;DWORD SetFilePointer(
+   510                                  ;  HANDLE hFile,
+   511                                  ;  LONG   lDistanceToMove,
+   512                                  ;  PLONG  lpDistanceToMoveHigh,
+   513                                  ;  DWORD  dwMoveMethod
+   514                                  ;);   
+   515 000006A7 488B0C25[D1020000]      	mov 	rcx, [fOutHandle]	        ;handle
+   516 000006AF 488B1425[B1020000]      	mov 	rdx, [OutOffsetVal]		;low bits of position
+   517 000006B7 41B800000000            	mov 	r8, 0         			;no high order bits in position
+   518 000006BD 41B900000000            	mov 	r9, 0     		        ;start from beginning = FILE_BEGIN
+   519 000006C3 E8(00000000)            	call	SetFilePointer
+   520 000006C8 4883F8FF                        cmp     rax, INVALID_SET_FILE_POINTER
+   521 000006CC 7537                            jne     DoWriteFile
+   522                                  ; display error message and terminate
+   523 000006CE 488B0C25[89020000]              mov     rcx, [NtOutConsoleHandle]
+   524 000006D6 48BA-                           mov     rdx, Msg_06_CannotSeekFile
+   524 000006D8 [A101000000000000] 
+   525 000006E0 4C8B0425[C7010000]              mov     r8, [Msg_06_Len]
+   526 000006E8 49B9-                           mov     r9, NtlpNBytesWritten
+   526 000006EA [0000000000000000] 
+   527 000006F2 48C744242000000000              mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   528 000006FB E8(00000000)                    call    WriteFile
+   529 00000700 E994000000                      jmp     Finished
+   530                                  
+   531                                  ; write output file
+   532                                  DoWriteFile:
+   533 00000705 4883EC38                        sub     rsp, 56
+   534 00000709 488B0C25[D1020000]              mov     rcx, [fOutHandle]        ; 1st arg = file handle
+   535 00000711 488D1425[08000000]              lea     rdx, [readbuffer]        ; 2nd arg = buffer address
+   536 00000719 4C8B0425[A9020000]              mov     r8, [InSizeVal]          ; 3rd arg = buffer size
+   537 00000721 4C8D0C25[00000000]              lea     r9, [NtlpNBytesWritten]  ; 4th arg = address of variable to bytes written counter
+   538 00000729 48C744242000000000              mov     qword [rsp + 32], 0      ; 5th arg = non overlapped
+   539 00000732 E8(00000000)                    call    WriteFile
+   540 00000737 488B0C25[00000000]              mov     rcx, [NtlpNBytesWritten]
+   541 0000073F 4809C0                          or      rax, rax
+   542 00000742 4883C438                        add     rsp, 56
+   543 00000746 740A                            jz     DisplayWriteError
+   544 00000748 483B0C25[A9020000]              cmp    rcx, [InSizeVal]
+   545 00000750 7432                            je     DoCloseOutputFile
+   546                                  DisplayWriteError:    
+   547                                  ; display error message and terminate
+   548 00000752 488B0C25[89020000]              mov     rcx, [NtOutConsoleHandle]
+   549 0000075A 48BA-                           mov     rdx, Msg_05_CannotWriteFile
+   549 0000075C [7301000000000000] 
+   550 00000764 4C8B0425[99010000]              mov     r8, [Msg_05_Len]
+   551 0000076C 49B9-                           mov     r9, NtlpNBytesWritten
+   551 0000076E [0000000000000000] 
+   552 00000776 48C744242000000000              mov     qword [rsp + 32], 00h   ; fifth arg on the stack above the shadow space.  Also, this is a pointer so it needs to be a qword store.
+   553 0000077F E8(00000000)                    call    WriteFile
+   554                                          ;jmp     Finished
+   555                                  
+   556                                  ; truncate and close output file
+   557                                  DoCloseOutputFile:
+   558                                  ;        sub     rsp, 56                  ; truncate file (?)
+   559                                  ;        mov     rcx, [fOutHandle]        ; 1st arg = file handle
+   560                                  ;        lea     rdx, [readbuffer]        ; 2nd arg = buffer address
+   561                                  ;        mov     r8, 0                    ; 3rd arg = buffer size
+   562                                  ;        lea     r9, [NtlpNBytesWritten]  ; 4th arg = address of variable to bytes written counter
+   563                                  ;        mov     qword [rsp + 32], 0      ; 5th arg = non overlapped
+   564                                  ;        call    WriteFile
+   565                                  ;        add     rsp, 56
+   566                                  
+   567 00000784 4883EC28                        sub     rsp, 40
+   568 00000788 488B0C25[D1020000]              mov     rcx, [fOutHandle]      
+   569 00000790 E8(00000000)                    call    CloseHandle
+   570 00000795 4883C428                        add     rsp, 40
+   571                                  
+   572                                  Finished:
+   573 00000799 4883C428                    add     rsp, 40
+   574                                  ExitProgram:
+   575 0000079D 31C0                        xor     eax, eax
+   576 0000079F C3                          ret
+   577                                  
+   578                                  
+   579                                  @fn_atoi:
+   580                                     ;mov rdx, num3entered ; our string
+   581                                  atoi:
+   582 000007A0 4831C0                      xor rax, rax ; zero a "result so far"
+   583                                  .top:
+   584 000007A3 480FB60A                    movzx rcx, byte [rdx] ; get a character
+   585 000007A7 48FFC2                      inc rdx ; ready for next one
+   586 000007AA 4883F930                    cmp rcx, '0' ; valid?
+   587 000007AE 7213                        jb .done
+   588 000007B0 4883F939                    cmp rcx, '9'
+   589 000007B4 770D                        ja .done
+   590 000007B6 4883E930                    sub rcx, '0' ; "convert" character to number
+   591 000007BA 486BC00A                    imul rax, 10 ; multiply "result so far" by ten
+   592 000007BE 4801C8                      add rax, rcx ; add in current digit
+   593 000007C1 EBE0                        jmp .top ; until done
+   594                                  .done:
+   595 000007C3 C3                          ret
+   596                                  
+   597                                  
+   598                                  section .data
+   599 00000000 0000000000000000        temp_rbx           dq    0
+   600 00000008 0D0A00                  crlf_buf           db    13,10,0
+   601 0000000B 0200000000000000        crlf_len           dq    2
+   602 00000013 5075742062696E6172-     NtlpBuffer         db    'Put binary portion to file, version 1.0', 13,10, 
+   602 0000001C 7920706F7274696F6E-
+   602 00000025 20746F2066696C652C-
+   602 0000002E 2076657273696F6E20-
+   602 00000037 312E300D0A         
+   603 0000003C 436F70797269676874-                        db    'Copyright (C) 2024 Dmitry Stefankov. All Rights Reserved.', 13,10,
+   603 00000045 202843292032303234-
+   603 0000004E 20446D697472792053-
+   603 00000057 746566616E6B6F762E-
+   603 00000060 20416C6C2052696768-
+   603 00000069 747320526573657276-
+   603 00000072 65642E0D0A         
+   604 00000077 55736167653A206269-                        db    'Usage: bin2file infile outfile in_offset in_size out_offset', 13,10,
+   604 00000080 6E3266696C6520696E-
+   604 00000089 66696C65206F757466-
+   604 00000092 696C6520696E5F6F66-
+   604 0000009B 6673657420696E5F73-
+   604 000000A4 697A65206F75745F6F-
+   604 000000AD 66667365740D0A     
+   605 000000B4 00                                         db    00h
+   606 000000B5 A100000000000000        NtnNBytesToWrite   dq    $ - NtlpBuffer - 1
+   607 000000BD 4552524F523A206361-     Msg_01_CannotOpenFile    db    'ERROR: canoot open input filename!', 13,10, 00h
+   607 000000C6 6E6F6F74206F70656E-
+   607 000000CF 20696E707574206669-
+   607 000000D8 6C656E616D65210D0A-
+   607 000000E1 00                 
+   608 000000E2 2400000000000000        Msg_01_Len               dq  $ - Msg_01_CannotOpenFile - 1
+   609 000000EA 4552524F523A206361-     Msg_02_CannotSeekFile    db    'ERROR: canoot seek input filename!', 13,10, 00h
+   609 000000F3 6E6F6F74207365656B-
+   609 000000FC 20696E707574206669-
+   609 00000105 6C656E616D65210D0A-
+   609 0000010E 00                 
+   610 0000010F 2400000000000000        Msg_02_Len               dq  $ - Msg_02_CannotSeekFile - 1
+   611 00000117 4552524F523A206361-     Msg_03_CannotReadFile    db    'ERROR: canoot read input filename!', 13,10, 00h
+   611 00000120 6E6F6F742072656164-
+   611 00000129 20696E707574206669-
+   611 00000132 6C656E616D65210D0A-
+   611 0000013B 00                 
+   612 0000013C 2400000000000000        Msg_03_Len               dq  $ - Msg_03_CannotReadFile - 1
+   613 00000144 4552524F523A206361-     Msg_04_CannotCreateFile  db    'ERROR: canoot create input filename!', 13,10, 00h
+   613 0000014D 6E6F6F742063726561-
+   613 00000156 746520696E70757420-
+   613 0000015F 66696C656E616D6521-
+   613 00000168 0D0A00             
+   614 0000016B 2600000000000000        Msg_04_Len               dq  $ - Msg_04_CannotCreateFile - 1
+   615 00000173 4552524F523A206361-     Msg_05_CannotWriteFile   db    'ERROR: canoot write input filename!', 13,10, 00h
+   615 0000017C 6E6F6F742077726974-
+   615 00000185 6520696E7075742066-
+   615 0000018E 696C656E616D65210D-
+   615 00000197 0A00               
+   616 00000199 2500000000000000        Msg_05_Len               dq  $ - Msg_05_CannotWriteFile - 1
+   617 000001A1 4552524F523A206361-     Msg_06_CannotSeekFile    db    'ERROR: canoot seek output filename!', 13,10, 00h
+   617 000001AA 6E6F6F74207365656B-
+   617 000001B3 206F75747075742066-
+   617 000001BC 696C656E616D65210D-
+   617 000001C5 0A00               
+   618 000001C7 DC00000000000000        Msg_06_Len               dq  $ - Msg_02_CannotSeekFile - 1
+   619 000001CF 0000000000000000        InFileNameLen      dq    0
+   620 000001D7 0000000000000000        OutFileNameLen     dq    0
+   621 000001DF 0000000000000000        InOffsetLen        dq    0
+   622 000001E7 0000000000000000        OutOffsetLen       dq    0
+   623 000001EF 0000000000000000        InSizeLen          dq    0
+   624 000001F7 000000000000000000-     InFileName         db    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+   624 00000200 000000000000000000-
+   624 00000209 000000000000000000-
+   624 00000212 000000000000000000-
+   624 0000021B 000000000000000000-
+   624 00000224 000000000000000000-
+   624 0000022D 00000000           
+   625 00000231 000000000000000000-     OutFileName        db    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+   625 0000023A 000000000000000000-
+   625 00000243 000000000000000000-
+   625 0000024C 000000000000000000-
+   625 00000255 000000000000000000-
+   625 0000025E 000000000000000000-
+   625 00000267 00000000           
+   626 0000026B 000000000000000000-     InOffsetBuf        db    0,0,0,0,0,0,0,0,0,0
+   626 00000274 00                 
+   627 00000275 000000000000000000-     OutOffsetBuf       db    0,0,0,0,0,0,0,0,0,0
+   627 0000027E 00                 
+   628 0000027F 000000000000000000-     InSizeBuf          db    0,0,0,0,0,0,0,0,0,0
+   628 00000288 00                 
+   629                                  
+   630 00000289 0000000000000000        NtOutConsoleHandle: dq	 0
+   631 00000291 0000000000000000        NtnArgsBuffer:	    dq   0
+   632 00000299 0000000000000000        NtArgsBufCount:     dq   0
+   633                                  
+   634 000002A1 0000000000000000        InOffsetVal         dq   0
+   635 000002A9 0000000000000000        InSizeVal           dq   0
+   636 000002B1 0000000000000000        OutOffsetVal        dq   0
+   637                                  
+   638                                  
+   639 000002B9 0000000000000000        fHandle                 dq  0
+   640 000002C1 0000000000000000        lpNumberOfBytesWritten 	dq  0 
+   641 000002C9 0000000000000000        lpNumberOfBytesRead 	dq  0
+   642 000002D1 0000000000000000        fOutHandle              dq  0
+   643                                  
+   644                                  
+   645                                  section .bss
+   646 00000000 <res 00000008>          NtlpNBytesWritten: resq  01h
+   647 00000008 <res 00002000>          readbuffer         resb  8192

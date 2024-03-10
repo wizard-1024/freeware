@@ -1,0 +1,7 @@
+[1] "Extract binary portion from file, version 1.0"
+[1] "Copyright (C) 2024 Dmitry Stefankov. All Rights Reserved."
+[1] "Usage: file2bin infile outfile in_offset in_size"
+[1] "infile    - input filename"
+[1] "outfile   - output filename"
+[1] "in_offset - byte offset on input stream (default=0)"
+[1] "in_size   - copy N bytes from input stream (default=0)"

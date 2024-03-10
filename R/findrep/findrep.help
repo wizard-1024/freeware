@@ -1,0 +1,7 @@
+[1] "Search and replace text pattern per file, version 1.0"
+[1] "Copyright (C) 2024 Dmitry Stefankov. All Rights Reserved."
+[1] "Usage: findrep infile outfile search_pattern replace_pattern"
+[1] "infile    - input filename"
+[1] "outfile   - output filename"
+[1] "srch_pat  - search pattern (default=empty)"
+[1] "repl_pat  - replace pattern (default=empty)"

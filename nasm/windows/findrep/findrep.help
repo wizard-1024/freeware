@@ -1,0 +1,4 @@
+Search and replace text pattern per file, version 1.0
+Copyright (C) 2024 Dmitry Stefankov. All Rights Reserved.
+Usage: findrep <InFileName> <OutFileName> <SrchPat> <RplPat>
+findrep.exe  

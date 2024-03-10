@@ -1,0 +1,8 @@
+[1] "Put binary portion to file, version 1.0"
+[1] "Copyright (C) 2024 Dmitry Stefankov. All Rights Reserved."
+[1] "Usage: bin2file infile outfile in_offset in_size out_offset"
+[1] "infile     - input filename"
+[1] "outfile    - output filename"
+[1] "in_offset  - byte offset on input stream (default=0)"
+[1] "in_size    - copy N bytes from input stream (default=0)"
+[1] "out_offset - byte offset on output stream (default=0)"

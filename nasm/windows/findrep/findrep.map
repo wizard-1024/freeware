@@ -1,0 +1,121 @@
+ findrep
+
+ Timestamp is 65da2bb9 (Sat Feb 24 20:47:37 2024)
+
+ Preferred load address is 0000000000400000
+
+ Start         Length     Name                   Class
+ 0001:00000000 000006eeH .text                   CODE
+ 0001:000006ee 0000002aH .text$mn                CODE
+ 0002:00000000 00000040H .idata$5                DATA
+ 0002:00000040 0000001cH .rdata                  DATA
+ 0002:0000005c 00000000H .edata                  DATA
+ 0002:0000005c 000000d4H .rdata$zzzdbg           DATA
+ 0002:00000130 00000014H .idata$2                DATA
+ 0002:00000144 00000014H .idata$3                DATA
+ 0002:00000158 00000040H .idata$4                DATA
+ 0002:00000198 00000072H .idata$6                DATA
+ 0003:00000000 0000030cH .data                   DATA
+ 0003:0000030c 00010008H .bss                    DATA
+
+  Address         Publics by Value              Rva+Base               Lib:Object
+
+ 0000:00000000       __guard_fids_table         0000000000000000     <absolute>
+ 0000:00000000       ___safe_se_handler_count   0000000000000000     <absolute>
+ 0000:00000000       __guard_longjmp_count      0000000000000000     <absolute>
+ 0000:00000000       ___safe_se_handler_table   0000000000000000     <absolute>
+ 0000:00000000       __guard_longjmp_table      0000000000000000     <absolute>
+ 0000:00000000       __guard_fids_count         0000000000000000     <absolute>
+ 0000:00000000       __guard_iat_count          0000000000000000     <absolute>
+ 0000:00000000       __guard_iat_table          0000000000000000     <absolute>
+ 0000:00000000       __dynamic_value_reloc_table 0000000000000000     <absolute>
+ 0000:00000000       __guard_flags              0000000000000000     <absolute>
+ 0001:00000000       main                       0000000000401000     findrep.obj
+ 0001:000006ee       GetStdHandle               00000000004016ee f   kernel32:KERNEL32.dll
+ 0001:000006f4       WriteFile                  00000000004016f4 f   kernel32:KERNEL32.dll
+ 0001:000006fa       GetCommandLineA            00000000004016fa f   kernel32:KERNEL32.dll
+ 0001:00000700       CreateFileA                0000000000401700 f   kernel32:KERNEL32.dll
+ 0001:00000706       ReadFile                   0000000000401706 f   kernel32:KERNEL32.dll
+ 0001:0000070c       CloseHandle                000000000040170c f   kernel32:KERNEL32.dll
+ 0001:00000712       GetFileSize                0000000000401712 f   kernel32:KERNEL32.dll
+ 0002:00000000       __imp_GetStdHandle         0000000000402000     kernel32:KERNEL32.dll
+ 0002:00000008       __imp_WriteFile            0000000000402008     kernel32:KERNEL32.dll
+ 0002:00000010       __imp_GetCommandLineA      0000000000402010     kernel32:KERNEL32.dll
+ 0002:00000018       __imp_CreateFileA          0000000000402018     kernel32:KERNEL32.dll
+ 0002:00000020       __imp_ReadFile             0000000000402020     kernel32:KERNEL32.dll
+ 0002:00000028       __imp_CloseHandle          0000000000402028     kernel32:KERNEL32.dll
+ 0002:00000030       __imp_GetFileSize          0000000000402030     kernel32:KERNEL32.dll
+ 0002:00000038       \177KERNEL32_NULL_THUNK_DATA 0000000000402038     kernel32:KERNEL32.dll
+ 0002:00000130       __IMPORT_DESCRIPTOR_KERNEL32 0000000000402130     kernel32:KERNEL32.dll
+ 0002:00000144       __NULL_IMPORT_DESCRIPTOR   0000000000402144     kernel32:KERNEL32.dll
+
+ entry point at        0001:00000000
+
+ Static symbols
+
+ 0001:00000059       NextSym                    0000000000401059     findrep.obj
+ 0001:00000067       ArgsDone                   0000000000401067     findrep.obj
+ 0001:000000a7       NextSym1                   00000000004010a7     findrep.obj
+ 0001:000000ba       TestDelim1                 00000000004010ba     findrep.obj
+ 0001:000000d8       NextSym2                   00000000004010d8     findrep.obj
+ 0001:000000f3       StoreInFile                00000000004010f3     findrep.obj
+ 0001:0000016f       TestDelim2                 000000000040116f     findrep.obj
+ 0001:0000018d       NextSym3                   000000000040118d     findrep.obj
+ 0001:000001a8       StoreOutFile               00000000004011a8     findrep.obj
+ 0001:00000224       TestDelim3                 0000000000401224     findrep.obj
+ 0001:00000242       NextSym4                   0000000000401242     findrep.obj
+ 0001:0000025d       StoreInPattern             000000000040125d     findrep.obj
+ 0001:000002d9       TestDelim4                 00000000004012d9     findrep.obj
+ 0001:000002f7       NextSym5                   00000000004012f7     findrep.obj
+ 0001:0000030e       StoreOutPattern            000000000040130e     findrep.obj
+ 0001:00000434       GetFileSizeHere            0000000000401434     findrep.obj
+ 0001:0000049b       ReadFileBuf                000000000040149b     findrep.obj
+ 0001:000004ea       DisplayReadError           00000000004014ea     findrep.obj
+ 0001:00000521       DoneCloseFile              0000000000401521     findrep.obj
+ 0001:00000551       GetNextCharPerBuffer       0000000000401551     findrep.obj
+ 0001:00000576       TestNextCharPattern        0000000000401576     findrep.obj
+ 0001:000005a8       CopyReplacePattern         00000000004015a8     findrep.obj
+ 0001:000005bc       MoveNextChar               00000000004015bc     findrep.obj
+ 0001:000005bc       MoveNextChar2              00000000004015bc     findrep.obj
+ 0001:000005ca       WriteOutFile               00000000004015ca     findrep.obj
+ 0001:00000652       DoWriteFile                0000000000401652     findrep.obj
+ 0001:0000069f       DisplayWriteError          000000000040169f     findrep.obj
+ 0001:000006d1       DoCloseOutputFile          00000000004016d1     findrep.obj
+ 0001:000006e6       Finished                   00000000004016e6     findrep.obj
+ 0001:000006ea       ExitProgram                00000000004016ea     findrep.obj
+ 0002:000001fc       .idata$6                   00000000004021fc     kernel32:KERNEL32.dll
+ 0003:00000000       temp_rbx                   0000000000403000     findrep.obj
+ 0003:00000008       crlf_buf                   0000000000403008     findrep.obj
+ 0003:0000000b       crlf_len                   000000000040300b     findrep.obj
+ 0003:00000013       NtlpBuffer                 0000000000403013     findrep.obj
+ 0003:000000c4       NtnNBytesToWrite           00000000004030c4     findrep.obj
+ 0003:000000cc       Msg_01_CannotOpenFile      00000000004030cc     findrep.obj
+ 0003:000000f1       Msg_01_Len                 00000000004030f1     findrep.obj
+ 0003:000000f9       Msg_02_CannotGetFileSize   00000000004030f9     findrep.obj
+ 0003:00000129       Msg_02_Len                 0000000000403129     findrep.obj
+ 0003:00000131       Msg_03_CannotReadFile      0000000000403131     findrep.obj
+ 0003:00000156       Msg_03_Len                 0000000000403156     findrep.obj
+ 0003:0000015e       Msg_04_CannotCreateFile    000000000040315e     findrep.obj
+ 0003:00000185       Msg_04_Len                 0000000000403185     findrep.obj
+ 0003:0000018d       Msg_05_CannotWriteFile     000000000040318d     findrep.obj
+ 0003:000001b3       Msg_05_Len                 00000000004031b3     findrep.obj
+ 0003:000001bb       InFileNameLen              00000000004031bb     findrep.obj
+ 0003:000001c3       OutFileNameLen             00000000004031c3     findrep.obj
+ 0003:000001cb       InPatternLen               00000000004031cb     findrep.obj
+ 0003:000001d3       OutPatternLen              00000000004031d3     findrep.obj
+ 0003:000001db       InFileName                 00000000004031db     findrep.obj
+ 0003:00000215       OutFileName                0000000000403215     findrep.obj
+ 0003:0000024f       InPatternBuf               000000000040324f     findrep.obj
+ 0003:00000289       OutPatternBuf              0000000000403289     findrep.obj
+ 0003:000002c3       NtOutConsoleHandle         00000000004032c3     findrep.obj
+ 0003:000002cb       NtnArgsBuffer              00000000004032cb     findrep.obj
+ 0003:000002d3       NtArgsBufCount             00000000004032d3     findrep.obj
+ 0003:000002db       InFileSize                 00000000004032db     findrep.obj
+ 0003:000002e3       OutFileSize                00000000004032e3     findrep.obj
+ 0003:000002eb       fHandle                    00000000004032eb     findrep.obj
+ 0003:000002f3       lpNumberOfBytesWritten     00000000004032f3     findrep.obj
+ 0003:000002fb       lpNumberOfBytesRead        00000000004032fb     findrep.obj
+ 0003:00000303       fOutHandle                 0000000000403303     findrep.obj
+ 0003:0000030c       NtlpNBytesWritten          000000000040330c     findrep.obj
+ 0003:00000314       readbuffer                 0000000000403314     findrep.obj
+ 0003:00004314       writebuffer                0000000000407314     findrep.obj
