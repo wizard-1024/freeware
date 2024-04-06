@@ -1,0 +1,467 @@
+     1                                  ; ----------------------------------------------------------------------------------------
+     2                                  ; Runs on 64-bit Linux only.
+     3                                  ; Extract part of file and save to file and exit
+     4                                  ; for 64-bit systems, Linux syscalls
+     5                                  ; 2024 (C) Dmitry Stefankov
+     6                                  ;
+     7                                  ; To assemble and run:
+     8                                  ;     nasm -felf64 file2bin.asm && ld -o file2bin file2bin.o && ./file2bin
+     9                                  ; ----------------------------------------------------------------------------------------
+    10                                  
+    11                                  ;;;sys_write	equ	1		; the linux WRITE syscall
+    12                                  ;;;sys_exit	equ	60		; the linux EXIT syscall
+    13                                  ;;;sys_stdout	equ	1		; the file descriptor for standard output (to print/write to)
+    14                                  
+    15                                  ; Exit Codes
+    16                                  EXIT_SUCCESS equ 0
+    17                                  EXIT_ERROR equ 1
+    18                                  
+    19                                  ; STD Codes
+    20                                  STD_IN equ 0
+    21                                  STD_OUT equ 1
+    22                                  STD_ERR equ 2
+    23                                  
+    24                                  ; System Calls
+    25                                  SYS_READ equ 0
+    26                                  SYS_WRITE equ 1
+    27                                  SYS_OPEN equ 2
+    28                                  SYS_CLOSE equ 3
+    29                                  SYS_LSEEK equ 8
+    30                                  SYS_EXIT equ 60
+    31                                  SYS_UNLINK equ 87
+    32                                  SYS_CREATE equ 85
+    33                                  
+    34                                  ; File Codes
+    35                                  O_RD_ONLY equ 0
+    36                                  O_WR_ONLY equ 1
+    37                                  O_RD_WR equ 2
+    38                                  
+    39                                  ; File Command Codes
+    40                                  O_CREAT equ 64
+    41                                  O_EXCL equ 128
+    42                                  O_NOCTTY equ 256
+    43                                  O_TRUNC equ 512
+    44                                  O_APPEND equ 1024
+    45                                  O_NONBLOCK equ 2048
+    46                                  O_NDELAY equ 2048
+    47                                  O_DSYNC equ 4096
+    48                                  O_ASYNC equ 8192
+    49                                  O_DIRECT equ 16384
+    50                                  O_DIRECTORY equ 65536
+    51                                  O_NOFOLLOW equ 131072
+    52                                  O_NOATIME equ 262144
+    53                                  O_CLOEXEC equ 524288
+    54                                  O_SYNC equ 1052672
+    55                                  O_PATH equ 2097152
+    56                                  O_TMPFILE equ 4259840
+    57                                  
+    58                                  ; LSEEK methods
+    59                                  LSEEK_SET equ 0
+    60                                  LSEEK_CUR equ 1
+    61                                  LSEEK_END equ 2
+    62                                  
+    63                                  
+    64                                            global    _start
+    65                                  
+    66                                            section   .text
+    67                                  _start:
+    68 00000000 4158                    	  pop	r8			; pop the number of arguments from the stack
+    69 00000002 5E                      	  pop	rsi			; discard the program name, since we only want the commandline arguments
+    70 00000003 4C890425[00000000]      	  mov	   [temp_r8], r8
+    71 0000000B 48893425[08000000]      	  mov	   [temp_rsi], rsi
+    72                                  
+    73 00000013 B801000000              	  mov       rax, SYS_WRITE          ; system call for write
+    74 00000018 BF01000000                        mov       rdi, STD_OUT            ; file handle 1 is stdout
+    75 0000001D 48BE-                             mov       rsi, HelpBuffer         ; address of string to output
+    75 0000001F [1100000000000000] 
+    76 00000027 488B1425[AE000000]                mov       rdx, [HelpBytesToWrite] ; number of bytes
+    77 0000002F 0F05                              syscall                           ; invoke operating system to do the write
+    78                                  
+    79                                  ; get next argument
+    80 00000031 488B3425[08000000]      	  mov	    rsi, [temp_rsi]
+    81 00000039 4C8B0425[00000000]      	  mov	    r8, [temp_r8]
+    82 00000041 4983F800                	  cmp	    r8,	0		    ; check if we have to print more arguments
+    83 00000045 0F8436030000            	  jz	   exit_to_world	    ; if not, jump to the 'end' label
+    84                                  
+    85                                  ; copy input filename
+    86 0000004B 5E                      	  pop	    rsi
+    87 0000004C 49FFC8                  	  dec	    r8
+    88 0000004F 4C890425[00000000]      	  mov	   [temp_r8], r8
+    89 00000057 48893425[08000000]      	  mov	   [temp_rsi], rsi
+    90                                  
+    91 0000005F E831030000              	  call      get_strlen
+    92 00000064 48891425[9C010000]      	  mov	    [InFileNameLen], rdx
+    93 0000006C 4889D1                  	  mov	    rcx, rdx
+    94 0000006F 488D3C25[BC010000]      	  lea	    rdi, [InFileName]
+    95 00000077 F3A4                              rep	    movsb
+    96                                  
+    97 00000079 488D3425[BC010000]      	  lea	    rsi, [InFileName]
+    98 00000081 B801000000              	  mov       rax, SYS_WRITE          ; system call for write
+    99 00000086 BF01000000                        mov       rdi, STD_OUT            ; file handle 1 is stdout
+   100 0000008B 0F05                              syscall                           ; invoke operating system to do the write
+   101                                  
+   102 0000008D E81E030000              	  call      print_lf
+   103                                  
+   104                                  ; get next argument
+   105 00000092 488B3425[08000000]      	  mov	    rsi, [temp_rsi]
+   106 0000009A 4C8B0425[00000000]      	  mov	    r8, [temp_r8]
+   107 000000A2 4983F800                	  cmp	    r8,	0		    ; check if we have to print more arguments
+   108 000000A6 0F84D5020000            	  jz	   exit_to_world	    ; if not, jump to the 'end' label
+   109                                  
+   110                                  ; copy output filename
+   111 000000AC 5E                      	  pop	    rsi
+   112 000000AD 49FFC8                  	  dec	    r8
+   113 000000B0 4C890425[00000000]      	  mov	   [temp_r8], r8
+   114 000000B8 48893425[08000000]      	  mov	   [temp_rsi], rsi
+   115                                  
+   116 000000C0 E8D0020000              	  call      get_strlen
+   117 000000C5 48891425[A4010000]      	  mov	    [OutFileNameLen], rdx
+   118 000000CD 4889D1                  	  mov	    rcx, rdx
+   119 000000D0 488D3C25[F6010000]      	  lea	    rdi, [OutFileName]
+   120 000000D8 F3A4                              rep	    movsb
+   121                                  
+   122 000000DA 488D3425[F6010000]      	  lea	    rsi, [OutFileName]
+   123 000000E2 B801000000              	  mov       rax, SYS_WRITE          ; system call for write
+   124 000000E7 BF01000000                        mov       rdi, STD_OUT            ; file handle 1 is stdout
+   125 000000EC 0F05                              syscall                           ; invoke operating system to do the write
+   126                                  
+   127 000000EE E8BD020000              	  call      print_lf
+   128                                  
+   129                                  ; get next argument
+   130 000000F3 488B3425[08000000]      	  mov	    rsi, [temp_rsi]
+   131 000000FB 4C8B0425[00000000]      	  mov	    r8, [temp_r8]
+   132 00000103 4983F800                	  cmp	    r8,	0		    ; check if we have to print more arguments
+   133 00000107 0F8474020000            	  jz	   exit_to_world	    ; if not, jump to the 'end' label
+   134                                  
+   135                                  ; copy input offset
+   136 0000010D 5E                      	  pop	    rsi
+   137 0000010E 49FFC8                  	  dec	    r8
+   138 00000111 4C890425[00000000]      	  mov	   [temp_r8], r8
+   139 00000119 48893425[08000000]      	  mov	   [temp_rsi], rsi
+   140                                  
+   141 00000121 E86F020000              	  call      get_strlen
+   142 00000126 48891425[AC010000]      	  mov	    [InOffsetLen], rdx
+   143 0000012E 4889D1                  	  mov	    rcx, rdx
+   144 00000131 488D3C25[30020000]      	  lea	    rdi, [InOffsetBuf]
+   145 00000139 F3A4                              rep	    movsb
+   146                                  
+   147 0000013B 488D3425[30020000]      	  lea	    rsi, [InOffsetBuf]
+   148 00000143 B801000000              	  mov       rax, SYS_WRITE          ; system call for write
+   149 00000148 BF01000000                        mov       rdi, STD_OUT            ; file handle 1 is stdout
+   150 0000014D 0F05                              syscall                           ; invoke operating system to do the write
+   151                                  
+   152 0000014F E85C020000              	  call      print_lf
+   153                                  
+   154                                  ; get next argument
+   155 00000154 488B3425[08000000]      	  mov	    rsi, [temp_rsi]
+   156 0000015C 4C8B0425[00000000]      	  mov	    r8, [temp_r8]
+   157 00000164 4983F800                	  cmp	    r8,	0		    ; check if we have to print more arguments
+   158 00000168 0F8413020000            	  jz	   exit_to_world	    ; if not, jump to the 'end' label
+   159                                  
+   160                                  ; copy input size
+   161 0000016E 5E                      	  pop	    rsi
+   162 0000016F 49FFC8                  	  dec	    r8
+   163 00000172 4C890425[00000000]      	  mov	   [temp_r8], r8
+   164 0000017A 48893425[08000000]      	  mov	   [temp_rsi], rsi
+   165                                  
+   166 00000182 E80E020000              	  call      get_strlen
+   167 00000187 48891425[B4010000]      	  mov	    [InSizeLen], rdx
+   168 0000018F 4889D1                  	  mov	    rcx, rdx
+   169 00000192 488D3C25[3A020000]      	  lea	    rdi, [InSizeBuf]
+   170 0000019A F3A4                              rep	    movsb
+   171                                  
+   172 0000019C 488D3425[3A020000]      	  lea	    rsi, [InSizeBuf]
+   173 000001A4 B801000000              	  mov       rax, SYS_WRITE          ; system call for write
+   174 000001A9 BF01000000                        mov       rdi, STD_OUT            ; file handle 1 is stdout
+   175 000001AE 0F05                              syscall                           ; invoke operating system to do the write
+   176                                  
+   177 000001B0 E8FB010000              	  call      print_lf
+   178                                  
+   179                                  
+   180                                  ; process numeric values
+   181 000001B5 48BA-                   	mov     rdx, InOffsetBuf ; our string
+   181 000001B7 [3002000000000000] 
+   182 000001BF E809020000              	call    fn_atoi
+   183 000001C4 48890425[5C020000]      	mov     [InOffsetVal], rax
+   184                                  
+   185 000001CC 48BA-                   	mov     rdx, InSizeBuf ; our string
+   185 000001CE [3A02000000000000] 
+   186 000001D6 E8F2010000              	call    fn_atoi
+   187 000001DB 48890425[64020000]      	mov     [InSizeVal], rax
+   188                                  
+   189                                  
+   190                                  ; open input file
+   191 000001E3 B802000000              	  mov rax, SYS_OPEN
+   192 000001E8 48BF-                   	  mov rdi, InFileName
+   192 000001EA [BC01000000000000] 
+   193 000001F2 BE00000000              	  mov rsi, O_RD_ONLY
+   194 000001F7 BAA4010000              	  mov rdx, 0644q
+   195 000001FC 0F05                    	  syscall
+   196                                  ;	  js  exit_with_error
+   197 000001FE 4883F800                	  cmp rax, 0
+   198 00000202 7C02                    	  jl   open_error
+   199 00000204 EB25                    	  jmp  seek_file
+   200                                  open_error:
+   201 00000206 50                      	  push	    rax
+   202 00000207 B801000000              	  mov       rax, SYS_WRITE          ; system call for write
+   203 0000020C BF01000000                        mov       rdi, STD_OUT            ; file handle 1 is stdout
+   204 00000211 48BE-                             mov       rsi, Msg_01_CannotOpenFile ; address of string to output
+   204 00000213 [B600000000000000] 
+   205 0000021B 488B1425[DB000000]                mov       rdx, [Msg_01_Len] ; number of bytes
+   206 00000223 0F05                    	  syscall
+   207 00000225 58                      	  pop       rax
+   208 00000226 E960010000              	  jmp       exit_with_error
+   209                                  
+   210                                  seek_file:
+   211 0000022B 48890425[6C020000]      	  mov [fHandle], rax
+   212                                  ; seek input file
+   213 00000233 488B3C25[6C020000]      	  mov rdi, [fHandle]
+   214 0000023B B808000000              	  mov rax, SYS_LSEEK
+   215 00000240 BA00000000              	  mov rdx, LSEEK_SET
+   216 00000245 488B3425[5C020000]      	  mov rsi, [InOffsetVal]
+   217 0000024D 0F05                    	  syscall
+   218 0000024F 4883F800                	  cmp rax, 0
+   219 00000253 7C02                    	  jl   seek_error
+   220 00000255 EB25                    	  jmp  read_file
+   221                                  seek_error:
+   222 00000257 50                      	  push	    rax
+   223 00000258 B801000000              	  mov       rax, SYS_WRITE          ; system call for write
+   224 0000025D BF01000000                        mov       rdi, STD_OUT            ; file handle 1 is stdout
+   225 00000262 48BE-                             mov       rsi, Msg_02_CannotSeekFile ; address of string to output
+   225 00000264 [E300000000000000] 
+   226 0000026C 488B1425[08010000]                mov       rdx, [Msg_02_Len] ; number of bytes
+   227 00000274 0F05                    	  syscall
+   228 00000276 58                      	  pop       rax
+   229 00000277 E90F010000              	  jmp       exit_with_error
+   230                                  
+   231                                  ; read input file
+   232                                  read_file:
+   233 0000027C 488B3C25[6C020000]      	  mov rdi, [fHandle]
+   234 00000284 B800000000              	  mov rax, SYS_READ
+   235 00000289 488D3425[08000000]      	  lea rsi, readbuffer
+   236 00000291 488B1425[64020000]      	  mov rdx, [InSizeVal]
+   237 00000299 0F05                    	  syscall
+   238 0000029B 0F88EA000000            	  js  exit_with_error
+   239 000002A1 483B0425[64020000]      	  cmp rax, [InSizeVal]
+   240 000002A9 7425                    	  je  close_file
+   241 000002AB 50                      	  push	    rax
+   242 000002AC B801000000              	  mov       rax, SYS_WRITE          ; system call for write
+   243 000002B1 BF01000000                        mov       rdi, STD_OUT            ; file handle 1 is stdout
+   244 000002B6 48BE-                             mov       rsi, Msg_03_CannotReadFile ; address of string to output
+   244 000002B8 [1001000000000000] 
+   245 000002C0 488B1425[35010000]                mov       rdx, [Msg_03_Len] ; number of bytes
+   246 000002C8 0F05                    	  syscall
+   247 000002CA 58                      	  pop       rax
+   248 000002CB E9BB000000              	  jmp       exit_with_error
+   249                                  
+   250                                  ; close input file
+   251                                  close_file:
+   252 000002D0 B803000000              	  mov rax, SYS_CLOSE
+   253 000002D5 488B3C25[6C020000]      	  mov rdi, [fHandle]
+   254 000002DD 0F05                    	  syscall
+   255                                  
+   256                                  ; create output file
+   257 000002DF B802000000              	  mov rax, SYS_OPEN
+   258 000002E4 488D3C25[F6010000]      	  lea rdi, OutFileName
+   259 000002EC BE41000000              	  mov rsi, O_CREAT+O_WR_ONLY
+   260 000002F1 BAA4010000              	  mov rdx, 0644q
+   261 000002F6 0F05                    	  syscall
+   262 000002F8 4883F800                	  cmp rax, 0
+   263 000002FC 7C02                    	  jl   create_error
+   264 000002FE EB22                    	  jmp  write_file
+   265                                  create_error:
+   266 00000300 50                      	  push	    rax
+   267 00000301 B801000000              	  mov       rax, SYS_WRITE          ; system call for write
+   268 00000306 BF01000000                        mov       rdi, STD_OUT            ; file handle 1 is stdout
+   269 0000030B 48BE-                             mov       rsi, Msg_04_CannotCreateFile ; address of string to output
+   269 0000030D [3D01000000000000] 
+   270 00000315 488B1425[65010000]                mov       rdx, [Msg_04_Len] ; number of bytes
+   271 0000031D 0F05                    	  syscall
+   272 0000031F 58                      	  pop       rax
+   273 00000320 EB69                    	  jmp       exit_with_error
+   274                                  
+   275                                  ; write to file
+   276                                  write_file:
+   277 00000322 48890425[84020000]      	  mov [fOutHandle], rax
+   278 0000032A 4889C7                  	  mov rdi, rax
+   279 0000032D B801000000              	  mov rax, SYS_WRITE
+   280 00000332 488D3425[08000000]      	  lea rsi, readbuffer
+   281 0000033A 488B1425[64020000]      	  mov rdx, [InSizeVal]
+   282 00000342 0F05                    	  syscall
+   283 00000344 7845                    	  js  exit_with_error
+   284 00000346 483B0425[64020000]      	  cmp rax, [InSizeVal]
+   285 0000034E 7422                    	  je  close_out_file
+   286 00000350 50                      	  push	    rax
+   287 00000351 B801000000              	  mov       rax, SYS_WRITE          ; system call for write
+   288 00000356 BF01000000                        mov       rdi, STD_OUT            ; file handle 1 is stdout
+   289 0000035B 48BE-                             mov       rsi, Msg_05_CannotWriteFile ; address of string to output
+   289 0000035D [6D01000000000000] 
+   290 00000365 488B1425[94010000]                mov       rdx, [Msg_05_Len] ; number of bytes
+   291 0000036D 0F05                    	  syscall
+   292 0000036F 58                      	  pop       rax
+   293 00000370 EB19                    	  jmp       exit_with_error
+   294                                  
+   295                                  ; close output file
+   296                                  close_out_file:
+   297 00000372 B803000000              	  mov rax, SYS_CLOSE
+   298 00000377 488B3C25[84020000]      	  mov rdi, [fOutHandle]
+   299 0000037F 0F05                    	  syscall
+   300                                  
+   301                                  ; return control to OS
+   302                                  exit_to_world:
+   303 00000381 B83C000000                        mov       rax, SYS_EXIT           ; system call for exit
+   304 00000386 4831FF                            xor       rdi, rdi                ; exit code 0
+   305 00000389 0F05                              syscall                           ; invoke operating system to exit
+   306                                  
+   307                                  exit_with_error:
+   308 0000038B 4889C7                  	  mov	    rdi, rax
+   309 0000038E B83C000000                        mov       rax, SYS_EXIT           ; system call for exit
+   310 00000393 0F05                              syscall                           ; invoke operating system to exit
+   311                                  
+   312                                  get_strlen:
+   313 00000395 4831D2                            xor      rdx, rdx
+   314 00000398 4989F1                  	  mov	   r9,	rsi
+   315 0000039B 4D09C9                  	  or	   r9,	r9
+   316 0000039E 740F                    	  jz	  do_ret
+   317                                  next_sym:
+   318 000003A0 418A19                  	  mov	   bl,	[r9]
+   319 000003A3 08DB                    	  or	   bl,	bl
+   320 000003A5 7408                    	  jz	  do_ret
+   321 000003A7 48FFC2                  	  inc	   rdx
+   322 000003AA 49FFC1                  	  inc	   r9
+   323 000003AD EBF1                    	  jmp	  next_sym
+   324                                  do_ret:
+   325 000003AF C3                              ret
+   326                                  
+   327                                  print_lf:
+   328 000003B0 B801000000              	mov	rax,	SYS_WRITE	; rax is overwritten by the kernel with the syscall return code, so we set it again
+   329 000003B5 BF01000000              	mov	rdi,	STD_OUT
+   330 000003BA 48BE-                   	mov	rsi,	linebreak	; this time we want to print a line break
+   330 000003BC [1000000000000000] 
+   331 000003C4 BA01000000              	mov	rdx,	1		; which is one byte long
+   332 000003C9 0F05                    	syscall
+   333 000003CB C3                              ret
+   334                                  
+   335                                  copy_block:
+   336                                  do_ret_2:
+   337 000003CC C3                              ret
+   338                                  
+   339                                  fn_atoi:
+   340                                          ;mov rdx, num3entered 		; our string
+   341                                  atoi:
+   342 000003CD 4831C0                  	xor	rax,	rax 		; zero a "result so far"
+   343                                  .top:
+   344 000003D0 480FB60A                	movzx	rcx, 	byte [rdx] 	; get a character
+   345 000003D4 48FFC2                  	inc	rdx 			; ready for next one
+   346 000003D7 4883F930                	cmp	rcx,	'0' 		; valid?
+   347 000003DB 7213                    	jb     .done
+   348 000003DD 4883F939                	cmp 	rcx, 	'9'
+   349 000003E1 770D                    	ja     .done
+   350 000003E3 4883E930                	sub	rcx,	'0' 		; "convert" character to number
+   351 000003E7 486BC00A                	imul	rax,	10 		; multiply "result so far" by ten
+   352 000003EB 4801C8                  	add	rax,	rcx 		; add in current digit
+   353 000003EE EBE0                    	jmp 	.top			; until done
+   354                                  .done:
+   355 000003F0 C3                              ret
+   356                                  
+   357                                  
+   358                                  
+   359                                            section   .data
+   360 00000000 0000000000000000        temp_r8		   dq	0
+   361 00000008 0000000000000000        temp_rsi	   dq	0
+   362                                  
+   363 00000010 0A                      linebreak	   db	0x0A		; ASCII character 10, a line break
+   364                                  
+   365 00000011 457874726163742062-     HelpBuffer         db    'Extract binary portion from file, version 1.0', 13,10,
+   365 0000001A 696E61727920706F72-
+   365 00000023 74696F6E2066726F6D-
+   365 0000002C 2066696C652C207665-
+   365 00000035 7273696F6E20312E30-
+   365 0000003E 0D0A               
+   366 00000040 436F70797269676874-                        db    'Copyright (C) 2024 Dmitry Stefankov. All Rights Reserved.', 13,10,
+   366 00000049 202843292032303234-
+   366 00000052 20446D697472792053-
+   366 0000005B 746566616E6B6F762E-
+   366 00000064 20416C6C2052696768-
+   366 0000006D 747320526573657276-
+   366 00000076 65642E0D0A         
+   367 0000007B 55736167653A206669-                        db    'Usage: file2bin infile outfile in_offset in_size', 13,10,
+   367 00000084 6C653262696E20696E-
+   367 0000008D 66696C65206F757466-
+   367 00000096 696C6520696E5F6F66-
+   367 0000009F 6673657420696E5F73-
+   367 000000A8 697A650D0A         
+   368 000000AD 00                                         db    00
+   369 000000AE 9C00000000000000        HelpBytesToWrite   dq    $ - HelpBuffer - 1
+   370                                  
+   371 000000B6 4552524F523A206361-     Msg_01_CannotOpenFile    db    'ERROR: canoot open input filename!', 13,10, 00h
+   371 000000BF 6E6F6F74206F70656E-
+   371 000000C8 20696E707574206669-
+   371 000000D1 6C656E616D65210D0A-
+   371 000000DA 00                 
+   372 000000DB 2400000000000000        Msg_01_Len               dq  $ - Msg_01_CannotOpenFile - 1
+   373 000000E3 4552524F523A206361-     Msg_02_CannotSeekFile    db    'ERROR: canoot seek input filename!', 13,10, 00h
+   373 000000EC 6E6F6F74207365656B-
+   373 000000F5 20696E707574206669-
+   373 000000FE 6C656E616D65210D0A-
+   373 00000107 00                 
+   374 00000108 2400000000000000        Msg_02_Len               dq  $ - Msg_02_CannotSeekFile - 1
+   375 00000110 4552524F523A206361-     Msg_03_CannotReadFile    db    'ERROR: canoot read input filename!', 13,10, 00h
+   375 00000119 6E6F6F742072656164-
+   375 00000122 20696E707574206669-
+   375 0000012B 6C656E616D65210D0A-
+   375 00000134 00                 
+   376 00000135 2400000000000000        Msg_03_Len               dq  $ - Msg_03_CannotReadFile - 1
+   377 0000013D 4552524F523A206361-     Msg_04_CannotCreateFile  db    'ERROR: canoot create output filename!', 13,10, 00h
+   377 00000146 6E6F6F742063726561-
+   377 0000014F 7465206F7574707574-
+   377 00000158 2066696C656E616D65-
+   377 00000161 210D0A00           
+   378 00000165 2700000000000000        Msg_04_Len               dq  $ - Msg_04_CannotCreateFile - 1
+   379 0000016D 4552524F523A206361-     Msg_05_CannotWriteFile   db    'ERROR: canoot write output filename!', 13,10, 00h
+   379 00000176 6E6F6F742077726974-
+   379 0000017F 65206F757470757420-
+   379 00000188 66696C656E616D6521-
+   379 00000191 0D0A00             
+   380 00000194 2600000000000000        Msg_05_Len               dq  $ - Msg_05_CannotWriteFile - 1
+   381                                  
+   382                                  
+   383 0000019C 0000000000000000        InFileNameLen      dq    0
+   384 000001A4 0000000000000000        OutFileNameLen     dq    0
+   385 000001AC 0000000000000000        InOffsetLen        dq    0
+   386 000001B4 0000000000000000        InSizeLen          dq    0
+   387 000001BC 000000000000000000-     InFileName         db    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+   387 000001C5 000000000000000000-
+   387 000001CE 000000000000000000-
+   387 000001D7 000000000000000000-
+   387 000001E0 000000000000000000-
+   387 000001E9 000000000000000000-
+   387 000001F2 00000000           
+   388 000001F6 000000000000000000-     OutFileName        db    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+   388 000001FF 000000000000000000-
+   388 00000208 000000000000000000-
+   388 00000211 000000000000000000-
+   388 0000021A 000000000000000000-
+   388 00000223 000000000000000000-
+   388 0000022C 00000000           
+   389 00000230 000000000000000000-     InOffsetBuf        db    0,0,0,0,0,0,0,0,0,0
+   389 00000239 00                 
+   390 0000023A 000000000000000000-     InSizeBuf          db    0,0,0,0,0,0,0,0,0,0
+   390 00000243 00                 
+   391                                  
+   392 00000244 0000000000000000        NtOutConsoleHandle: dq	 0
+   393 0000024C 0000000000000000        NtnArgsBuffer:	    dq   0
+   394 00000254 0000000000000000        NtArgsBufCount:     dq   0
+   395                                  
+   396 0000025C 0000000000000000        InOffsetVal         dq   0
+   397 00000264 0000000000000000        InSizeVal           dq   0
+   398                                  
+   399                                  
+   400 0000026C 0000000000000000        fHandle                 dq  0
+   401 00000274 0000000000000000        lpNumberOfBytesWritten 	dq  0 
+   402 0000027C 0000000000000000        lpNumberOfBytesRead 	dq  0
+   403 00000284 0000000000000000        fOutHandle              dq  0
+   404                                  
+   405                                  section .bss
+   406 00000000 ????????????????        NtlpNBytesWritten: resq  01h
+   407 00000008 <res 2000h>             readbuffer         resb  8192

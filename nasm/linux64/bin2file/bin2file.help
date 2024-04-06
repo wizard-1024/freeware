@@ -1,0 +1,4 @@
+Put binary portion to file, version 1.0
+Copyright (C) 2024 Dmitry Stefankov. All Rights Reserved.
+Usage: bin2file infile outfile in_offset in_size out_offset
+

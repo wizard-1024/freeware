@@ -1,0 +1,10 @@
+
+Extract binary portion from file, version 1.portion from file, versio6 Dmitry Stefankov. All Rights Reserved.
+Usage: file2bin [-vfh] [-i infile] [-o outfile]
+       [-l in_offset] [-s in_size]
+       -h       this help
+       -v       verbose output (default=no)
+       -f       don't suppress questions (default=yes)
+       -l val   byte offset on input stream (default=0)
+       -s N     copy N bytes from input stream (default=0)
+
