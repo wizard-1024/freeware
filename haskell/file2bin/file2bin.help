@@ -1,0 +1,5 @@
+Extract binary portion from file, version 1.0
+Copyright (C) 2025 Dmitry Stefankov. All Rights Reserved.
+file2bin.exe
+Options {optVerbose = False, optShowVersion = False, optInputFilename = "", optOutputFilename = "", optOffset = 0, optBytes = 0}
+

@@ -1,0 +1,12 @@
+Put binary portion from file, version 1.0
+Copyright (C) 2025 Dmitry Stefankov. All Rights Reserved.
+bin2file.exe: 
+Usage: bin2file.exe [OPTION...]
+  -i INFILE   --infile=INFILE     input filename
+  -o OUTFILE  --outfile=OUTFILE   output filename
+  -l OFFSET   --inoffset=OFFSET   byte offset on input stream
+  -s BYTES    --inbytes=BYTES     copy N bytes from input stream
+  -p OFFSET   --outoffset=OFFSET  byte offset on output stream
+  -V, -?      --version           show version number
+  -v          --verbose           verbose output
+)
