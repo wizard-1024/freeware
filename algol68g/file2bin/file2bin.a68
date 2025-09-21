@@ -1,0 +1,102 @@
+COMMENT
+
+File file2bin.a68
+Extract binary portion from one file and write to another file
+Copyright (c) Dmitry V. Stefankov, 2025. All rights reserved.
+
+How to run:
+a68g.exe/a68g --verbose file2bin.a68 
+or
+a68g.exe/a68g file2bin.a68
+
+COMMENT
+
+BEGIN
+
+#-----------------------------------#
+PROC read all = (STRING filename) STRING:
+(
+    FILE filein;
+    BOOL endfile := FALSE;
+    STRING line, contents := "";
+    CHAR eol = REPR (10); # Represents the newline character #
+
+    open (filein, filename, stand in channel);
+
+    # Set up end-of-file event handling #
+    on logical file end (filein, (REF FILE f) BOOL: endfile := TRUE);
+
+    # Read the first line #
+    get (filein, (line, newline));
+
+    WHILE NOT endfile DO
+        contents:= contents + line + eol;
+        get (filein, (line, newline))
+    OD;
+
+    # Return the accumulated content #
+    contents
+);
+
+PROC write all = (STRING filename, STRING buffer) INT:
+(
+  FILE outfile;
+  INT status := establish(outfile, filename, stand out channel);
+  IF status /= 0
+  THEN
+    print(("Error: Could not open or create file ", filename, new line))
+  ELSE
+    # Write the string to the file and close the file #
+    put(outfile, buffer);
+    close(outfile);
+    print(("Successfully wrote to ", filename, new line))
+  FI;
+  status
+);
+
+  # print banner message #
+  print(( "Extract binary portion from file, version 1.0", newline ));
+  print(( "Copyright (C) 2025 Dmitry Stefankov. All Rights Reserved.", newline ));
+
+      # Interaction #
+
+      PROC get answer = (STRING prompt) STRING:
+           BEGIN STRING s; 
+                 # printf(($g"?"l$, prompt)); #
+                 printf(($gl$, prompt));
+                 readf(($gl$, s)); 
+                 printf(($"> "gl$, s)); 
+                 s
+           END;
+
+  # get input and output filename #
+  STRING infname = get answer("Please enter input filename: ");
+  STRING outfname = get answer("Please enter output filename: ");
+
+  # input file offset in bytes #
+  print (("Please enter input file offset: "));
+  INT ofs = read int;
+  print (("You have entered: ", ofs, newline));
+
+  # input file length in bytes #
+  print (("Please enter input file length: "));
+  INT len = read int;
+  print (("You have entered: ", len, newline));
+
+  # Test code #
+  # print (read all ("intest.txt")) #
+  # print (read all (infname)) #
+  STRING inbuf;
+  inbuf := (read all (infname));
+  #print ((inbuf));#
+
+  STRING newbuf;
+  INT b1 := ofs;
+  INT b2 := ofs+len;
+  newbuf := inbuf[b1:b2];
+
+  INT wstatus := (write all(outfname,newbuf));
+  print
+
+END
+

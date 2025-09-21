@@ -1,0 +1,30 @@
+a68g: initialiser
+a68g: tokeniser
+a68g: preprocessor
+a68g: parser phase 1
+a68g: standard environ builder
+a68g: parser phase 2
+a68g: parser phase 3
+a68g: mode table builder
+a68g: symbol table builder
+a68g: parser phase 4
+a68g: mode checker
+a68g: coercion enforcer
+a68g: finalize tree
+a68g: application checker
+a68g: static scope checker
+a68g: portability checker
+a68g: genie
+Extract binary portion from file, version 1.0
+Copyright (C) 2025 Dmitry Stefankov. All Rights Reserved.
+Please enter input filename: 
+> test.in
+Please enter output filename: 
+> test.out
+Please enter input file offset: You have entered:                  +10
+Please enter input file length: You have entered:                  +22
+Successfully wrote to test.out
+a68g: sweeps=0, refused=0, freed=0
+a68g: store rng state
+a68g: write listing
+a68g: exit

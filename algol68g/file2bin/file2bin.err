@@ -1,0 +1,6 @@
+19        open (filein, filename, stand in channel);
+          1                                         
+a68g: warning: 1: value of INT call will be voided, in closed-clause starting at "(" in line 13.
+94      print
+        1    
+a68g: warning: 1: value of PROC ([] "SIMPLOUT") VOID identifier will be voided, in closed-clause starting at "BEGIN" in line 9.

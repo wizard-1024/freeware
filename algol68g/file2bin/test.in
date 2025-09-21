@@ -1,0 +1,12 @@
+Algol 68 Genie 3.9.5
+Copyright 2001-2025 Marcel van der Veer <algol68g@xs4all.nl>.
+
+This is free software covered by the GNU General Public License.
+There is ABSOLUTELY NO WARRANTY for Algol 68 Genie;
+not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+Please report bugs to Marcel van der Veer <algol68g@xs4all.nl>.
+
+Usage: a68g [options | filename]
+For help: a68g --apropos [keyword]
